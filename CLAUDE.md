@@ -17,33 +17,37 @@
 
 ## 📊 Status projekta (2026-04-06)
 
-> **MVP+ KOMPLETIRAN — svih 12 modula funkcionalno, 0 stub stranica.**  
+> **PRODUKCIJA LIVE — https://znr-erp.pages.dev**  
+> Svih 12 modula + Dashboard + Postavke + Sprint 013 (ZOP + automatizacija).  
 > Pilot tenant: **Carta d.o.o.** (Osijek, prerađivačka industrija)  
-> 52 aktivna + 9 bivša djelatnika importirana iz CSV-a.  
-> Dashboard sa statistikama, Postavke s korisnicima/ulogama/zakonima.
+> 52 aktivna + 9 bivša djelatnika. Emailovi rade s **noreply@znr-erp.com**.
 
 **Implementirano:**
 - M01 Djelatnici CRUD + profil + PDF dosje (EK-1, EK-2, EK-4)
 - M02 Radna mjesta + procjena rizika (čl. 18 ZZnR)
 - M03 Osposobljavanja CRUD + status engine + auto-alarm trigger
 - M04 Zdravstveni pregledi CRUD + auto next_check_date
-- M05 Radna oprema CRUD + inspection status + vatrogasni aparati
+- M05 Radna oprema CRUD + ZOP sustavi (hidrant, vatrodojava, sprinkler, CO₂, sig. rasvjeta, plin detekcija)
 - M06 Radni okoliš — ispitivanja fizikalni/kemijski (PR-05)
 - M07 OZO — osobna zaštitna oprema (PR-06 NN 5/21)
 - M08 Ozljede na radu — 48h HZZO alarm (čl. 62 ZZnR)
 - M09 Evakuacija — vježbe evakuacije (čl. 45 ZZnR)
 - M10 SDS listovi — sigurnosno-tehnički listovi opasnih tvari
-- M11 Akcijski centar — agregacija alarma iz 6 izvora
+- M11 Akcijski centar — agregacija alarma iz 6 izvora + ZNR stručnjak multi-klijent
 - M12 Izvješća + Inspekcijska mapa + PDF obrasci (EK-1..5, ZOS)
 - Dashboard — statistike svih modula + hitni alarmi + quick links
-- Postavke — tvrtka, korisnici, uloge/dozvole, zakonske reference
+- Postavke — tvrtka, korisnici, uloge/dozvole, zakonske reference, **automatizacija emailova**
+- **Email automatizacija** — Edge Function + pg_cron (07:00 dnevno) + Resend (noreply@znr-erp.com)
+- **Sprint 013 ZOP** — ispravak rokova VA (90d/365d/1825d), 6 novih ZOP equipment tipova, 9 novih legal_references
+- **Cloudflare Pages** — auto-deploy na push, SPA _redirects
+- **CI** — GitHub Actions TypeScript check
 
 **Tehnički dug (preostalo za Fazu 2):**
-- Email alarmi (Resend) — Edge Function nije implementirana, pg_cron pending
 - QR kod za opremu — `qr_code_token` postoji u tablici, UI nije implementiran
 - Digitalni potpis flow — polja postoje, email link "Potvrđujem" nije implementiran
 - OIR-1 / ER-2 PDF obrasci — HZZO specifični obrasci za ozljede
-- Email pozivnice za nove korisnike (Resend integracija)
+- Email pozivnice za nove korisnike
+- Seed pravih ZNR podataka iz Excel-a
 
 ## ⚠️ Arhitekturne napomene
 
