@@ -20,6 +20,8 @@ const RadnikProfilPage = lazy(() => import('@/modules/M01-radnici/pages/RadnikPr
 const TrainingFormPage    = lazy(() => import('@/modules/M03-osposobljavanja/pages/TrainingFormPage'))
 const HealthCheckFormPage = lazy(() => import('@/modules/M04-zdravstveni-pregledi/pages/HealthCheckFormPage'))
 const EquipmentFormPage   = lazy(() => import('@/modules/M05-radna-oprema/pages/EquipmentFormPage'))
+const RadnaMjestaPage     = lazy(() => import('@/modules/M02-radna-mjesta/pages/RadnaMjestaPage'))
+const PositionFormPage    = lazy(() => import('@/modules/M02-radna-mjesta/pages/PositionFormPage'))
 const OsposobljavanjaPage = lazy(() => import('@/modules/M03-osposobljavanja/pages/OsposobljavanjaPage'))
 const ZdravstveniPreglediPage = lazy(() => import('@/modules/M04-zdravstveni-pregledi/pages/ZdravstveniPreglediPage'))
 const RadnaOpremaPage = lazy(() => import('@/modules/M05-radna-oprema/pages/RadnaOpremaPage'))
@@ -127,6 +129,14 @@ export function AppRouter() {
 
         <Route path="/zdravstveni-pregledi">
           <TenantRoute><ZdravstveniPreglediPage /></TenantRoute>
+        </Route>
+
+        {/* M02 Radna mjesta */}
+        <Route path="/radna-mjesta/novo">
+          <TenantRoute><PositionFormPage /></TenantRoute>
+        </Route>
+        <Route path="/radna-mjesta">
+          <TenantRoute><RadnaMjestaPage /></TenantRoute>
         </Route>
 
         <Route path="/radna-oprema/novo">
