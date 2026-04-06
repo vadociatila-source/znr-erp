@@ -16,6 +16,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      automation_settings: {
+        Row: Record<string, unknown>
+        Insert: Record<string, unknown>
+        Update: Record<string, unknown>
+        Relationships: [{ foreignKeyName: "automation_settings_tenant_id_fkey"; columns: ["tenant_id"]; isOneToOne: true; referencedRelation: "tenants"; referencedColumns: ["id"] }]
+      }
+      automation_log: {
+        Row: {
+          id: string; tenant_id: string; email_type: string; recipient: string
+          subject: string; entity_type: string | null; entity_id: string | null
+          sent_at: string; status: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; email_type: string; recipient: string
+          subject: string; entity_type?: string | null; entity_id?: string | null
+          sent_at?: string; status?: string
+        }
+        Update: {
+          id?: string; tenant_id?: string; email_type?: string; recipient?: string
+          subject?: string; entity_type?: string | null; entity_id?: string | null
+          sent_at?: string; status?: string
+        }
+        Relationships: [{ foreignKeyName: "automation_log_tenant_id_fkey"; columns: ["tenant_id"]; isOneToOne: false; referencedRelation: "tenants"; referencedColumns: ["id"] }]
+      }
       audit_log: {
         Row: {
           action: string

@@ -9,24 +9,39 @@ export type EquipmentInsert = Database['public']['Tables']['equipment']['Insert'
 export type EquipmentUpdate = Database['public']['Tables']['equipment']['Update']
 
 export const EQUIPMENT_TYPES = [
+  // Standardna oprema
   { value: 'machine',            label: 'Stroj / Uređaj' },
-  { value: 'fire_extinguisher',  label: 'Vatrogasni aparat' },
-  { value: 'fire_protection',    label: 'PP oprema' },
   { value: 'pressure_vessel',    label: 'Posuda pod tlakom' },
   { value: 'lifting',            label: 'Dizalica / Viličar' },
   { value: 'electrical',         label: 'Električna instalacija' },
   { value: 'vehicle',            label: 'Vozilo' },
+  // Vatrogasni aparati — [ZAK: Pr. NN 101/11] 3 roka: 90d/365d/5god
+  { value: 'fire_extinguisher',  label: 'Vatrogasni aparat' },
+  { value: 'fire_protection',    label: 'PP oprema (maska, kombinezon)' },
+  // ZOP stabilni sustavi — [ZAK: ZoZP NN 92/10 čl.40] godišnje ispitivanje
+  { value: 'hydrant_network',    label: 'Hidrantska mreža' },
+  { value: 'fire_alarm_system',  label: 'Sustav za dojavu požara (vatrodojava)' },
+  { value: 'sprinkler_system',   label: 'Sprinkler sustav' },
+  { value: 'co2_suppression',    label: 'CO₂ / prah sustav gašenja' },
+  { value: 'emergency_lighting', label: 'Protupanična / sigurnosna rasvjeta' },
+  { value: 'gas_detection',      label: 'Detekcija zapaljivih plinova i para' },
   { value: 'other',              label: 'Ostalo' },
 ] as const
 
 export const EQUIPMENT_LEGAL_CODES: Record<string, string> = {
   machine:           'PR04-oprema-3god',
-  fire_extinguisher: 'ZOP-aparat-vizualni-1god',
+  fire_extinguisher: 'ZOP-VA-servis-365d',
   fire_protection:   'PR04-oprema-3god',
   pressure_vessel:   'PR04-oprema-3god',
   lifting:           'PR04-oprema-3god',
   electrical:        'PR04-oprema-3god',
   vehicle:           'PR04-oprema-3god',
+  hydrant_network:   'ZOP-hidrant-365d',
+  fire_alarm_system: 'ZOP-vatrodojava-365d',
+  sprinkler_system:  'ZOP-sprinkler-365d',
+  co2_suppression:   'ZOP-co2-365d',
+  emergency_lighting:'ZOP-sig-rasvjeta-365d',
+  gas_detection:     'ZOP-plin-detekcija-365d',
   other:             'PR04-oprema-3god',
 }
 
