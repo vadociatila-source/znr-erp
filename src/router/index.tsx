@@ -17,6 +17,7 @@ const DashboardPage   = lazy(() => import('@/pages/dashboard/DashboardPage'))
 const RadniciPage      = lazy(() => import('@/modules/M01-radnici/pages/RadniciPage'))
 const RadnikFormPage   = lazy(() => import('@/modules/M01-radnici/pages/RadnikFormPage'))
 const RadnikProfilPage = lazy(() => import('@/modules/M01-radnici/pages/RadnikProfilPage'))
+const TrainingFormPage = lazy(() => import('@/modules/M03-osposobljavanja/pages/TrainingFormPage'))
 const OsposobljavanjaPage = lazy(() => import('@/modules/M03-osposobljavanja/pages/OsposobljavanjaPage'))
 const ZdravstveniPreglediPage = lazy(() => import('@/modules/M04-zdravstveni-pregledi/pages/ZdravstveniPreglediPage'))
 const RadnaOpremaPage = lazy(() => import('@/modules/M05-radna-oprema/pages/RadnaOpremaPage'))
@@ -92,6 +93,11 @@ export function AppRouter() {
 
         <Route path="/akcijski-centar">
           <TenantRoute><AkcijskiCentarPage /></TenantRoute>
+        </Route>
+
+        {/* M03 Osposobljavanja — dodaj za djelatnika */}
+        <Route path="/radnici/:workerId/osposobljavanja/novo">
+          <TenantRoute><TrainingFormPage /></TenantRoute>
         </Route>
 
         {/* M01 Radnici — /novi MORA biti PRIJE /:id (wouter match order) */}

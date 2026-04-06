@@ -4,13 +4,15 @@
 
 import { useState } from 'react'
 import { Link, useLocation, useRoute } from 'wouter'
-import { Edit2, UserX, AlertTriangle, BookOpen, Heart, Wrench } from 'lucide-react'
+import { Edit2, UserX, AlertTriangle, BookOpen, Heart, Wrench, Plus } from 'lucide-react'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { Button } from '@/components/ui/Button'
 import { Card, Badge, Alert, Spinner } from '@/components/ui/index'
 import { LegalBadge } from '@/components/legal/LegalBadge'
 import { DeactivateWorkerModal } from '../components/DeactivateWorkerModal'
 import { useWorker, useWorkerMutations } from '../hooks/useWorkers'
+import { useWorkerTrainings } from '@/modules/M03-osposobljavanja/hooks/useTrainings'
+import { TrainingsTable } from '@/modules/M03-osposobljavanja/components/TrainingsTable'
 import toast from 'react-hot-toast'
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
@@ -27,6 +29,7 @@ export default function RadnikProfilPage() {
   const [, params] = useRoute('/radnici/:id')
   const workerId = params?.id
   const { worker, isLoading, error } = useWorker(workerId)
+  const { trainings: workerTrainings, isLoading: loadingTrainings } = useWorkerTrainings(workerId)
   const { deactivateWorker, isSubmitting } = useWorkerMutations()
   const [showDeactivate, setShowDeactivate] = useState(false)
 
@@ -152,14 +155,30 @@ export default function RadnikProfilPage() {
           )}
         </div>
 
-        {/* Sidebar — ZNR moduli (placeholderi za Sprint 004+) */}
+        {/* Sidebar — ZNR moduli */}
         <div className="space-y-4">
-          <Card padding="md" className="opacity-60">
-            <div className="flex items-center gap-2 mb-2">
-              <BookOpen size={16} className="text-blue-500" />
-              <h4 className="text-sm font-semibold text-slate-700">Osposobljavanja</h4>
+          {/* M03 Osposobljavanja — LIVE */}
+          <Card padding="md">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <BookOpen size={16} className="text-blue-500" />
+                <h4 className="text-sm font-semibold text-slate-700">Osposobljavanja</h4>
+              </div>
+              {worker.status === 'active' && (
+                <Link href={`/radnici/${worker.id}/osposobljavanja/novo`}>
+                  <Button variant="ghost" size="sm" leftIcon={<Plus size={14} />}>
+                    Dodaj
+                  </Button>
+                </Link>
+              )}
             </div>
-            <p className="text-xs text-slate-500">Sprint 004 — čl. 27 ZZnR</p>
+            {loadingTrainings ? (
+              <p className="text-xs text-slate-400">Učitavanje...</p>
+            ) : workerTrainings.length > 0 ? (
+              <TrainingsTable trainings={workerTrainings} isLoading={false} showWorkerName={false} />
+            ) : (
+              <p className="text-xs text-slate-500">Nema unesenih osposobljavanja — čl. 27 ZZnR</p>
+            )}
           </Card>
 
           <Card padding="md" className="opacity-60">
