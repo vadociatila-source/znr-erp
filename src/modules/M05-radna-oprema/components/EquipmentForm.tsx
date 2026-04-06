@@ -95,7 +95,7 @@ export function EquipmentForm({ onSubmit, isSubmitting }: Props) {
 
       <Card padding="lg">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-slate-900">Podaci o opremi</h3>
+          <h3 className="text-sm font-semibold text-[var(--text)]">Podaci o opremi</h3>
           <LegalBadge article="PR-04 NN 16/16" deadline="pregled max. 3 god" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -111,17 +111,17 @@ export function EquipmentForm({ onSubmit, isSubmitting }: Props) {
           <Input label="Odjel" value={form.department} onChange={update('department')} />
         </div>
         <div className="mt-4">
-          <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+          <label className="inline-flex items-center gap-2 text-sm text-[var(--text)]">
             <input type="checkbox" checked={form.has_increased_risk}
               onChange={e => setForm(f => ({ ...f, has_increased_risk: e.target.checked }))}
-              className="rounded border-slate-300 text-brand-600 focus:ring-brand-500" />
+              className="rounded border-[var(--border)] text-[var(--mg-500)] focus:ring-[var(--border-f)]" />
             Oprema s povećanim rizikom
           </label>
         </div>
       </Card>
 
       <Card padding="lg">
-        <h3 className="text-sm font-semibold text-slate-900 mb-4">Pregledi</h3>
+        <h3 className="text-sm font-semibold text-[var(--text)] mb-4">Pregledi</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input label="Datum zadnjeg pregleda" type="date" value={form.last_inspection_date}
             onChange={update('last_inspection_date')} />
@@ -134,9 +134,9 @@ export function EquipmentForm({ onSubmit, isSubmitting }: Props) {
       </Card>
 
       <Card padding="lg">
-        <h3 className="text-sm font-semibold text-slate-900 mb-4">Napomene</h3>
+        <h3 className="text-sm font-semibold text-[var(--text)] mb-4">Napomene</h3>
         <textarea value={form.notes} onChange={update('notes')} rows={3}
-          className="w-full rounded-lg border border-slate-300 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
+          className="w-full rounded-lg border border-[var(--border)] text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--border-f)] focus:border-transparent" />
       </Card>
 
       <div className="flex justify-end">

@@ -23,12 +23,12 @@ export function TrainingsTable({ trainings, isLoading, showWorkerName = true }: 
   const [, navigate] = useLocation()
 
   if (isLoading) {
-    return <div className="flex justify-center py-12"><Spinner size="lg" className="text-brand-600" /></div>
+    return <div className="flex justify-center py-12"><Spinner size="lg" className="text-[var(--mg-500)]" /></div>
   }
 
   if (trainings.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-500">
+      <div className="text-center py-12 text-[var(--muted)]">
         <p className="text-lg font-medium">Nema osposobljavanja</p>
         <p className="text-sm mt-1">Dodajte novo osposobljavanje za djelatnika.</p>
       </div>
@@ -59,16 +59,16 @@ export function TrainingsTable({ trainings, isLoading, showWorkerName = true }: 
             >
               {showWorkerName && (
                 <Table.Cell>
-                  <span className="font-medium text-slate-900">
+                  <span className="font-medium text-[var(--text)]">
                     {t.worker ? `${t.worker.first_name} ${t.worker.last_name}` : '—'}
                   </span>
                 </Table.Cell>
               )}
               <Table.Cell>
-                <span className="font-medium text-slate-900">{t.training_name}</span>
+                <span className="font-medium text-[var(--text)]">{t.training_name}</span>
               </Table.Cell>
               <Table.Cell>
-                <span className="text-xs text-slate-500">{typeLabel}</span>
+                <span className="text-xs text-[var(--muted)]">{typeLabel}</span>
               </Table.Cell>
               <Table.Cell>
                 {new Date(t.training_date).toLocaleDateString('hr-HR')}
@@ -76,12 +76,12 @@ export function TrainingsTable({ trainings, isLoading, showWorkerName = true }: 
               <Table.Cell>
                 {t.valid_until
                   ? new Date(t.valid_until).toLocaleDateString('hr-HR')
-                  : <span className="text-slate-300">Trajno</span>}
+                  : <span className="text-[var(--hint)]">Trajno</span>}
               </Table.Cell>
               <Table.Cell>
                 <Badge variant={badge.variant}>{badge.label}</Badge>
               </Table.Cell>
-              <Table.Cell>{t.provider ?? <span className="text-slate-300">—</span>}</Table.Cell>
+              <Table.Cell>{t.provider ?? <span className="text-[var(--hint)]">—</span>}</Table.Cell>
             </Table.Row>
           )
         })}

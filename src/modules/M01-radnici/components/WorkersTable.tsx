@@ -18,14 +18,14 @@ export function WorkersTable({ workers, isLoading }: WorkersTableProps) {
   if (isLoading) {
     return (
       <div className="flex justify-center py-12">
-        <Spinner size="lg" className="text-brand-600" />
+        <Spinner size="lg" className="text-[var(--mg-500)]" />
       </div>
     )
   }
 
   if (workers.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-500">
+      <div className="text-center py-12 text-[var(--muted)]">
         <p className="text-lg font-medium">Nema djelatnika</p>
         <p className="text-sm mt-1">Promijenite filter ili dodajte novog djelatnika.</p>
       </div>
@@ -52,31 +52,31 @@ export function WorkersTable({ workers, isLoading }: WorkersTableProps) {
             <Table.Row key={w.id} onClick={() => navigate(`/radnici/${w.id}`)}>
               <Table.Cell>
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-slate-900">
+                  <span className="font-medium text-[var(--text)]">
                     {w.first_name} {w.last_name}
                   </span>
                   {w.is_special_conditions && (
-                    <span title="Posebni uvjeti rada"><Shield size={14} className="text-amber-500" /></span>
+                    <span title="Posebni uvjeti rada"><Shield size={14} className="text-[var(--warn-acc)]" /></span>
                   )}
                 </div>
                 {w.email && (
-                  <p className="text-xs text-slate-400 mt-0.5">{w.email}</p>
+                  <p className="text-xs text-[var(--hint)] mt-0.5">{w.email}</p>
                 )}
               </Table.Cell>
               <Table.Cell>
                 {w.oib ? (
                   <span className="font-mono text-xs">{w.oib}</span>
                 ) : (
-                  <span className="text-slate-300 text-xs">—</span>
+                  <span className="text-[var(--hint)] text-xs">—</span>
                 )}
               </Table.Cell>
-              <Table.Cell>{w.work_position?.name ?? <span className="text-slate-300">—</span>}</Table.Cell>
-              <Table.Cell>{w.department ?? <span className="text-slate-300">—</span>}</Table.Cell>
+              <Table.Cell>{w.work_position?.name ?? <span className="text-[var(--hint)]">—</span>}</Table.Cell>
+              <Table.Cell>{w.department ?? <span className="text-[var(--hint)]">—</span>}</Table.Cell>
               <Table.Cell>
                 {w.employment_date ? (
                   new Date(w.employment_date).toLocaleDateString('hr-HR')
                 ) : (
-                  <span className="text-slate-300">—</span>
+                  <span className="text-[var(--hint)]">—</span>
                 )}
               </Table.Cell>
               <Table.Cell>
@@ -86,7 +86,7 @@ export function WorkersTable({ workers, isLoading }: WorkersTableProps) {
               </Table.Cell>
               <Table.Cell>
                 {missingData && (
-                  <span title="Nepotpuni podaci"><AlertTriangle size={14} className="text-amber-500" /></span>
+                  <span title="Nepotpuni podaci"><AlertTriangle size={14} className="text-[var(--warn-acc)]" /></span>
                 )}
               </Table.Cell>
             </Table.Row>

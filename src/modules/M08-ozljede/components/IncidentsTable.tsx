@@ -13,9 +13,9 @@ const HZZO_BADGE: Record<string, { variant: 'success' | 'warning' | 'danger'; la
 interface Props { incidents: IncidentWithWorker[]; isLoading: boolean }
 
 export function IncidentsTable({ incidents, isLoading }: Props) {
-  if (isLoading) return <div className="flex justify-center py-12"><Spinner size="lg" className="text-brand-600" /></div>
+  if (isLoading) return <div className="flex justify-center py-12"><Spinner size="lg" className="text-[var(--mg-500)]" /></div>
   if (incidents.length === 0) {
-    return <div className="text-center py-12 text-slate-500">
+    return <div className="text-center py-12 text-[var(--muted)]">
       <p className="text-lg font-medium">Nema prijavljenih ozljeda</p>
     </div>
   }
@@ -40,7 +40,7 @@ export function IncidentsTable({ incidents, isLoading }: Props) {
           return (
             <Table.Row key={inc.id}>
               <Table.Cell>
-                <span className="font-medium text-slate-900">
+                <span className="font-medium text-[var(--text)]">
                   {inc.worker ? `${inc.worker.first_name} ${inc.worker.last_name}` : '—'}
                 </span>
               </Table.Cell>

@@ -32,10 +32,10 @@ export function DeactivateWorkerModal({ worker, isOpen, onClose, onConfirm, isSu
         </>
       }
     >
-      <p className="text-sm text-slate-700">
+      <p className="text-sm text-[var(--text)]">
         Djelatnik <strong>{worker.first_name} {worker.last_name}</strong> će biti označen kao bivši zaposlenik.
       </p>
-      <p className="text-sm text-slate-500 mt-2">
+      <p className="text-sm text-[var(--muted)] mt-2">
         Podaci se trajno čuvaju sukladno zakonu. Nikad se ne brišu iz sustava.
       </p>
       <div className="mt-3">

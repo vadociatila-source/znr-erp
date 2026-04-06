@@ -59,7 +59,7 @@ export default function RadnaOpremaPage() {
           ]} value={filters.status}
             onChange={e => updateFilter({ status: e.target.value })} />
         </div>
-        <div className="flex items-center gap-2 text-sm text-slate-500">
+        <div className="flex items-center gap-2 text-sm text-[var(--muted)]">
           <Badge variant="info">{totalCount}</Badge>
           <span>komada opreme</span>
         </div>

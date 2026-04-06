@@ -14,11 +14,11 @@ import type { AkcijskiItem } from '../hooks/useAkcijskiCentar'
 import { ALARM_COLORS, type AlarmLevel } from '@/types/legal.types'
 
 const LEVEL_ICON: Record<AlarmLevel, React.ReactNode> = {
-  critical: <AlertTriangle size={16} className="text-red-600" />,
-  urgent:   <Clock size={16} className="text-orange-600" />,
+  critical: <AlertTriangle size={16} className="text-[var(--crit-acc)]" />,
+  urgent:   <Clock size={16} className="text-[var(--warn-acc)]" />,
   warning:  <Bell size={16} className="text-yellow-600" />,
-  info:     <Info size={16} className="text-blue-600" />,
-  ok:       <CheckCircle size={16} className="text-green-600" />,
+  info:     <Info size={16} className="text-[var(--info-acc)]" />,
+  ok:       <CheckCircle size={16} className="text-[var(--ok-acc)]" />,
 }
 
 const LEVEL_LABELS: Record<AlarmLevel, string> = {
@@ -88,7 +88,7 @@ export default function AkcijskiCentarPage() {
   if (isLoading) {
     return (
       <AppLayout title="Akcijski centar">
-        <div className="flex justify-center py-12"><Spinner size="lg" className="text-brand-600" /></div>
+        <div className="flex justify-center py-12"><Spinner size="lg" className="text-[var(--mg-500)]" /></div>
       </AppLayout>
     )
   }
@@ -102,13 +102,13 @@ export default function AkcijskiCentarPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <Card
           padding="md"
-          className={`cursor-pointer border-2 ${filterLevel === 'critical' ? 'border-red-400' : 'border-transparent'}`}
+          className={`cursor-pointer border-2 ${filterLevel === 'critical' ? 'border-[var(--crit-b)]' : 'border-transparent'}`}
           onClick={() => setFilterLevel(f => f === 'critical' ? 'all' : 'critical')}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-2xl font-bold text-red-600">{counts.critical}</p>
-              <p className="text-xs text-slate-500">Isteklo / Hitno</p>
+              <p className="text-2xl font-bold text-[var(--crit-acc)]">{counts.critical}</p>
+              <p className="text-xs text-[var(--muted)]">Isteklo / Hitno</p>
             </div>
             <AlertTriangle size={24} className="text-red-300" />
           </div>
@@ -120,8 +120,8 @@ export default function AkcijskiCentarPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-2xl font-bold text-orange-600">{counts.urgent}</p>
-              <p className="text-xs text-slate-500">Uskoro ističe</p>
+              <p className="text-2xl font-bold text-[var(--warn-acc)]">{counts.urgent}</p>
+              <p className="text-xs text-[var(--muted)]">Uskoro ističe</p>
             </div>
             <Clock size={24} className="text-orange-300" />
           </div>
@@ -134,7 +134,7 @@ export default function AkcijskiCentarPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-2xl font-bold text-yellow-600">{counts.warning}</p>
-              <p className="text-xs text-slate-500">Upozorenja</p>
+              <p className="text-xs text-[var(--muted)]">Upozorenja</p>
             </div>
             <Bell size={24} className="text-yellow-300" />
           </div>
@@ -146,8 +146,8 @@ export default function AkcijskiCentarPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-2xl font-bold text-blue-600">{counts.info}</p>
-              <p className="text-xs text-slate-500">Na vidiku</p>
+              <p className="text-2xl font-bold text-[var(--info-acc)]">{counts.info}</p>
+              <p className="text-xs text-[var(--muted)]">Na vidiku</p>
             </div>
             <Info size={24} className="text-blue-300" />
           </div>
@@ -156,7 +156,7 @@ export default function AkcijskiCentarPage() {
 
       {/* Info bar */}
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-[var(--muted)]">
           {filterLevel === 'all'
             ? `${total} aktivnih alarma`
             : `${filtered.length} — ${LEVEL_LABELS[filterLevel]}`}
@@ -164,7 +164,7 @@ export default function AkcijskiCentarPage() {
         {filterLevel !== 'all' && (
           <button
             onClick={() => setFilterLevel('all')}
-            className="text-xs text-brand-600 hover:underline"
+            className="text-xs text-[var(--mg-500)] hover:underline"
           >
             Prikaži sve
           </button>
@@ -174,9 +174,9 @@ export default function AkcijskiCentarPage() {
       {/* Lista alarma */}
       {filtered.length === 0 ? (
         <div className="text-center py-12">
-          <CheckCircle size={48} className="text-green-300 mx-auto mb-3" />
-          <p className="text-lg font-medium text-slate-700">Sve uredno!</p>
-          <p className="text-sm text-slate-500">Nema aktivnih alarma.</p>
+          <CheckCircle size={48} className="text-[var(--ok-t)] mx-auto mb-3" />
+          <p className="text-lg font-medium text-[var(--text)]">Sve uredno!</p>
+          <p className="text-sm text-[var(--muted)]">Nema aktivnih alarma.</p>
         </div>
       ) : (
         <div className="space-y-3">

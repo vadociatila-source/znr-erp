@@ -48,7 +48,7 @@ export function getAlarmLevel(daysUntilExpiry: number): AlarmLevel {
 }
 
 export const ALARM_COLORS: Record<AlarmLevel, string> = {
-  critical: 'bg-red-50 border-red-400 text-red-800',
+  critical: 'bg-[var(--crit-bg)] border-[var(--crit-b)] text-[var(--crit-t)]',
   urgent:   'bg-orange-50 border-orange-400 text-orange-800',
   warning:  'bg-yellow-50 border-yellow-400 text-yellow-800',
   info:     'bg-blue-50 border-blue-400 text-blue-800',
@@ -56,7 +56,7 @@ export const ALARM_COLORS: Record<AlarmLevel, string> = {
 }
 
 export const ALARM_BADGE_COLORS: Record<AlarmLevel, string> = {
-  critical: 'bg-red-100 text-red-700 border-red-300',
+  critical: 'bg-red-100 text-[var(--crit-t)] border-[var(--crit-b)]',
   urgent:   'bg-orange-100 text-orange-700 border-orange-300',
   warning:  'bg-yellow-100 text-yellow-700 border-yellow-300',
   info:     'bg-blue-100 text-blue-700 border-blue-300',

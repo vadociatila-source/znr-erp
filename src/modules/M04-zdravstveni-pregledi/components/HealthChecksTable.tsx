@@ -21,11 +21,11 @@ const NEXT_CHECK_BADGE: Record<string, { variant: 'success' | 'warning' | 'dange
 export function HealthChecksTable({ checks, isLoading, showWorkerName = true }: Props) {
   const [, navigate] = useLocation()
 
-  if (isLoading) return <div className="flex justify-center py-12"><Spinner size="lg" className="text-brand-600" /></div>
+  if (isLoading) return <div className="flex justify-center py-12"><Spinner size="lg" className="text-[var(--mg-500)]" /></div>
 
   if (checks.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-500">
+      <div className="text-center py-12 text-[var(--muted)]">
         <p className="text-lg font-medium">Nema zdravstvenih pregleda</p>
         <p className="text-sm mt-1">Dodajte pregled za djelatnika s posebnim uvjetima rada.</p>
       </div>
@@ -55,7 +55,7 @@ export function HealthChecksTable({ checks, isLoading, showWorkerName = true }: 
             <Table.Row key={c.id} onClick={() => navigate(`/radnici/${c.worker_id}`)}>
               {showWorkerName && (
                 <Table.Cell>
-                  <span className="font-medium text-slate-900">
+                  <span className="font-medium text-[var(--text)]">
                     {c.worker ? `${c.worker.first_name} ${c.worker.last_name}` : '—'}
                   </span>
                 </Table.Cell>
@@ -65,11 +65,11 @@ export function HealthChecksTable({ checks, isLoading, showWorkerName = true }: 
               <Table.Cell>
                 {c.next_check_date
                   ? new Date(c.next_check_date).toLocaleDateString('hr-HR')
-                  : <span className="text-slate-300">—</span>}
+                  : <span className="text-[var(--hint)]">—</span>}
               </Table.Cell>
               <Table.Cell><Badge variant={resultBadge.variant}>{resultBadge.label}</Badge></Table.Cell>
               <Table.Cell><Badge variant={nextBadge.variant}>{nextBadge.label}</Badge></Table.Cell>
-              <Table.Cell>{c.institution ?? <span className="text-slate-300">—</span>}</Table.Cell>
+              <Table.Cell>{c.institution ?? <span className="text-[var(--hint)]">—</span>}</Table.Cell>
             </Table.Row>
           )
         })}

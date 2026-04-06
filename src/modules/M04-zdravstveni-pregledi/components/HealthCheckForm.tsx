@@ -89,7 +89,7 @@ export function HealthCheckForm({ workerId, onSubmit, isSubmitting }: Props) {
 
       <Card padding="lg">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-slate-900">Podaci o pregledu</h3>
+          <h3 className="text-sm font-semibold text-[var(--text)]">Podaci o pregledu</h3>
           <LegalBadge article="čl. 34 ZZnR" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -106,7 +106,7 @@ export function HealthCheckForm({ workerId, onSubmit, isSubmitting }: Props) {
       </Card>
 
       <Card padding="lg">
-        <h3 className="text-sm font-semibold text-slate-900 mb-4">Liječnik i ustanova</h3>
+        <h3 className="text-sm font-semibold text-[var(--text)] mb-4">Liječnik i ustanova</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input label="Ime liječnika" value={form.doctor_name} onChange={update('doctor_name')} />
           <Input label="Ustanova" value={form.institution} onChange={update('institution')} />
@@ -116,9 +116,9 @@ export function HealthCheckForm({ workerId, onSubmit, isSubmitting }: Props) {
       </Card>
 
       <Card padding="lg">
-        <h3 className="text-sm font-semibold text-slate-900 mb-4">Napomene</h3>
+        <h3 className="text-sm font-semibold text-[var(--text)] mb-4">Napomene</h3>
         <textarea value={form.notes} onChange={update('notes')} rows={3}
-          className="w-full rounded-lg border border-slate-300 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+          className="w-full rounded-lg border border-[var(--border)] text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--border-f)] focus:border-transparent"
           placeholder="Dodatne napomene..." />
       </Card>
 

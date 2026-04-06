@@ -51,7 +51,7 @@ export default function OzoPage() {
       </div>}
     >
       {isLoading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : records.length === 0 ? (
-        <div className="text-center py-12 text-slate-500">
+        <div className="text-center py-12 text-[var(--muted)]">
           <p className="text-lg font-medium">Nema izdane OZO</p>
           <p className="text-sm mt-1">Evidentirajte izdavanje osobne zaštitne opreme djelatnicima.</p>
         </div>

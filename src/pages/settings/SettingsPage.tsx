@@ -66,7 +66,7 @@ function TvrtkaTab() {
 
   return (
     <Card padding="lg">
-      <h3 className="text-sm font-semibold text-slate-900 mb-4">Podaci o tvrtki</h3>
+      <h3 className="text-sm font-semibold text-[var(--text)] mb-4">Podaci o tvrtki</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
         <Input label="Naziv tvrtke" value={form.name}
           onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
@@ -81,7 +81,7 @@ function TvrtkaTab() {
       </div>
       <div className="mt-4 flex items-center gap-4">
         <Button onClick={handleSave} isLoading={saving}>Spremi</Button>
-        <div className="text-xs text-slate-400">
+        <div className="text-xs text-[var(--hint)]">
           Plan: <Badge variant="info">{tenant?.plan}</Badge> |
           Status: <Badge variant={tenant?.status === 'active' ? 'success' : 'warning'}>{tenant?.status}</Badge> |
           Trial do: {tenant?.trial_ends_at ? new Date(tenant.trial_ends_at).toLocaleDateString('hr-HR') : '—'}
@@ -145,7 +145,7 @@ function KorisniciTab() {
     <>
       <Card padding="lg">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-slate-900">Korisnici ({users.length})</h3>
+          <h3 className="text-sm font-semibold text-[var(--text)]">Korisnici ({users.length})</h3>
           <Button size="sm" leftIcon={<Plus size={14} />} onClick={() => setShowInvite(true)}>
             Pozovi korisnika
           </Button>
@@ -177,7 +177,7 @@ function KorisniciTab() {
                   {u.is_external_specialist ? <Badge variant="purple">Da</Badge> : 'Ne'}
                 </Table.Cell>
                 <Table.Cell>
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-[var(--muted)]">
                     {new Date(u.created_at).toLocaleDateString('hr-HR')}
                   </span>
                 </Table.Cell>
@@ -212,7 +212,7 @@ function KorisniciTab() {
 function UlogeTab() {
   return (
     <Card padding="lg">
-      <h3 className="text-sm font-semibold text-slate-900 mb-4">Uloge i dozvole</h3>
+      <h3 className="text-sm font-semibold text-[var(--text)] mb-4">Uloge i dozvole</h3>
       <Table>
         <Table.Header>
           <Table.Row>
@@ -227,8 +227,8 @@ function UlogeTab() {
           {(Object.entries(ROLE_PERMISSIONS) as Array<[UserRole, typeof ROLE_PERMISSIONS[UserRole]]>).map(([role, perms]) => (
             <Table.Row key={role}>
               <Table.Cell>
-                <span className="font-medium text-slate-900">{ROLE_LABELS[role]}</span>
-                <p className="text-xs text-slate-400">{role}</p>
+                <span className="font-medium text-[var(--text)]">{ROLE_LABELS[role]}</span>
+                <p className="text-xs text-[var(--hint)]">{role}</p>
               </Table.Cell>
               <Table.Cell>{perms.canEdit ? <Badge variant="success">Da</Badge> : <Badge>Ne</Badge>}</Table.Cell>
               <Table.Cell>{perms.canDelete ? <Badge variant="success">Da</Badge> : <Badge>Ne</Badge>}</Table.Cell>
@@ -238,7 +238,7 @@ function UlogeTab() {
           ))}
         </Table.Body>
       </Table>
-      <p className="text-xs text-slate-400 mt-4">
+      <p className="text-xs text-[var(--hint)] mt-4">
         Dozvole su definirane u kodu (ROLE_PERMISSIONS) i provode se kroz RLS politike u bazi.
         Za promjenu dozvola kontaktiraj administratora.
       </p>
@@ -268,8 +268,8 @@ function ZakoniTab() {
   return (
     <Card padding="lg">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-slate-900">Zakonske reference ({refs.length})</h3>
-        <p className="text-xs text-slate-400">Globalna tablica — ZZnR vrijedi za sve HR tvrtke</p>
+        <h3 className="text-sm font-semibold text-[var(--text)]">Zakonske reference ({refs.length})</h3>
+        <p className="text-xs text-[var(--hint)]">Globalna tablica — ZZnR vrijedi za sve HR tvrtke</p>
       </div>
 
       <Table>
@@ -293,17 +293,17 @@ function ZakoniTab() {
               <Table.Cell>
                 <span className="text-xs">
                   {r.deadline_days ? `${r.deadline_days} dana` : '—'}
-                  {r.deadline_description && <span className="block text-slate-400">{r.deadline_description}</span>}
+                  {r.deadline_description && <span className="block text-[var(--hint)]">{r.deadline_description}</span>}
                 </span>
               </Table.Cell>
-              <Table.Cell><span className="text-xs text-slate-400">{r.nn_number ?? '—'}</span></Table.Cell>
+              <Table.Cell><span className="text-xs text-[var(--hint)]">{r.nn_number ?? '—'}</span></Table.Cell>
               <Table.Cell>
                 <div className="flex gap-1 flex-wrap">
                   {r.module_codes.map(m => <Badge key={m} size="sm">{m}</Badge>)}
                 </div>
               </Table.Cell>
               <Table.Cell>
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-[var(--hint)]">
                   {r.last_verified ? new Date(r.last_verified).toLocaleDateString('hr-HR') : '—'}
                 </span>
               </Table.Cell>
@@ -399,14 +399,14 @@ function AutomatizacijaTab() {
           <Card key={sec.key} padding="md">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h4 className="text-sm font-semibold text-slate-900">{sec.title}</h4>
-                <p className="text-xs text-slate-400">{sec.law}</p>
+                <h4 className="text-sm font-semibold text-[var(--text)]">{sec.title}</h4>
+                <p className="text-xs text-[var(--hint)]">{sec.law}</p>
               </div>
               <label className="inline-flex items-center gap-2">
                 <input type="checkbox" checked={enabled}
                   onChange={e => updateField(enabledKey, e.target.checked)}
-                  className="rounded border-slate-300 text-brand-600 focus:ring-brand-500" />
-                <span className="text-xs text-slate-500">{enabled ? 'Uključeno' : 'Isključeno'}</span>
+                  className="rounded border-[var(--border)] text-[var(--mg-500)] focus:ring-[var(--border-f)]" />
+                <span className="text-xs text-[var(--muted)]">{enabled ? 'Uključeno' : 'Isključeno'}</span>
               </label>
             </div>
 
@@ -423,10 +423,10 @@ function AutomatizacijaTab() {
                   const fieldKey = `${sec.key}_${f}`
                   if (f === 'notify_worker') {
                     return (
-                      <label key={fieldKey} className="inline-flex items-center gap-2 text-sm text-slate-700 self-end pb-2">
+                      <label key={fieldKey} className="inline-flex items-center gap-2 text-sm text-[var(--text)] self-end pb-2">
                         <input type="checkbox" checked={settings[fieldKey] as boolean ?? true}
                           onChange={e => updateField(fieldKey, e.target.checked)}
-                          className="rounded border-slate-300 text-brand-600 focus:ring-brand-500" />
+                          className="rounded border-[var(--border)] text-[var(--mg-500)] focus:ring-[var(--border-f)]" />
                         Pošalji i djelatniku
                       </label>
                     )
@@ -466,15 +466,15 @@ export default function SettingsPage() {
       breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Postavke' }]}
     >
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-slate-200 mb-6 overflow-x-auto">
+      <div className="flex gap-1 border-b border-[var(--border)] mb-6 overflow-x-auto">
         {TABS.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
               tab === t.id
-                ? 'border-brand-600 text-brand-600'
-                : 'border-transparent text-slate-500 hover:text-slate-700'
+                ? 'border-[var(--mg-500)] text-[var(--mg-500)]'
+                : 'border-transparent text-[var(--muted)] hover:text-[var(--text)]'
             }`}
           >
             {t.icon} {t.label}

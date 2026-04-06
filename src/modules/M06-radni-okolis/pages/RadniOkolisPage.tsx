@@ -54,7 +54,7 @@ export default function RadniOkolisPage() {
       </div>}
     >
       {isLoading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : tests.length === 0 ? (
-        <div className="text-center py-12 text-slate-500">
+        <div className="text-center py-12 text-[var(--muted)]">
           <p className="text-lg font-medium">Nema ispitivanja</p>
           <p className="text-sm mt-1">Dodajte ispitivanje radnog okoliša.</p>
         </div>

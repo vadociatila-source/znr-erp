@@ -13,9 +13,9 @@ const RA_BADGE: Record<string, { variant: 'success' | 'warning' | 'danger'; labe
 interface Props { positions: WorkPositionRow[]; isLoading: boolean }
 
 export function PositionsTable({ positions, isLoading }: Props) {
-  if (isLoading) return <div className="flex justify-center py-12"><Spinner size="lg" className="text-brand-600" /></div>
+  if (isLoading) return <div className="flex justify-center py-12"><Spinner size="lg" className="text-[var(--mg-500)]" /></div>
   if (positions.length === 0) {
-    return <div className="text-center py-12 text-slate-500">
+    return <div className="text-center py-12 text-[var(--muted)]">
       <p className="text-lg font-medium">Nema radnih mjesta</p>
       <p className="text-sm mt-1">Dodajte radno mjesto.</p>
     </div>
@@ -41,19 +41,19 @@ export function PositionsTable({ positions, isLoading }: Props) {
           const raBadge = RA_BADGE[raStatus]
           return (
             <Table.Row key={p.id}>
-              <Table.Cell><span className="font-medium text-slate-900">{p.name}</span></Table.Cell>
-              <Table.Cell>{p.code ?? <span className="text-slate-300">—</span>}</Table.Cell>
+              <Table.Cell><span className="font-medium text-[var(--text)]">{p.name}</span></Table.Cell>
+              <Table.Cell>{p.code ?? <span className="text-[var(--hint)]">—</span>}</Table.Cell>
               <Table.Cell>
                 {p.is_special_conditions
                   ? <Badge variant="warning">Da</Badge>
-                  : <span className="text-slate-400">Ne</span>}
+                  : <span className="text-[var(--hint)]">Ne</span>}
               </Table.Cell>
               <Table.Cell>{riskLabel}</Table.Cell>
               <Table.Cell><Badge variant={raBadge.variant}>{raBadge.label}</Badge></Table.Cell>
               <Table.Cell>
                 {p.risk_assessment_next
                   ? new Date(p.risk_assessment_next).toLocaleDateString('hr-HR')
-                  : <span className="text-slate-300">—</span>}
+                  : <span className="text-[var(--hint)]">—</span>}
               </Table.Cell>
               <Table.Cell>
                 <Badge variant={p.status === 'active' ? 'success' : 'default'}>

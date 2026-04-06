@@ -131,16 +131,16 @@ export default function OnboardingPage() {
 
   // ── UI ───────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center p-4">
       <div className="w-full max-w-xl">
         {/* Brand */}
         <div className="flex items-center justify-center gap-3 mb-6">
-          <div className="w-12 h-12 bg-brand-600 rounded-2xl flex items-center justify-center shadow-lg">
+          <div className="w-12 h-12 bg-[var(--mg-500)] rounded-[12px] flex items-center justify-center shadow-2xl">
             <Shield size={24} className="text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">ZNR ERP</h1>
-            <p className="text-sm text-slate-500">Postavljanje tvrtke</p>
+            <h1 className="text-2xl font-bold text-[var(--text)]">ZNR ERP</h1>
+            <p className="text-sm text-[var(--muted)]">Postavljanje tvrtke</p>
           </div>
         </div>
 
@@ -150,7 +150,7 @@ export default function OnboardingPage() {
             <div
               key={n}
               className={`h-1.5 w-16 rounded-full transition-colors ${
-                step >= (n as 1 | 2) ? 'bg-brand-600' : 'bg-slate-200'
+                step >= (n as 1 | 2) ? 'bg-[var(--mg-500)]' : 'bg-[var(--raised)]'
               }`}
             />
           ))}
@@ -159,8 +159,8 @@ export default function OnboardingPage() {
         <Card padding="lg">
           {step === 1 && (
             <>
-              <h2 className="text-lg font-semibold text-slate-900 mb-1">Podaci o tvrtki</h2>
-              <p className="text-sm text-slate-500 mb-6">
+              <h2 className="text-lg font-semibold text-[var(--text)] mb-1">Podaci o tvrtki</h2>
+              <p className="text-sm text-[var(--muted)] mb-6">
                 Osnovne informacije potrebne za zakonsku evidenciju ZNR.
               </p>
 
@@ -188,15 +188,15 @@ export default function OnboardingPage() {
                 />
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-slate-700">Djelatnost</label>
+                  <label className="text-sm font-medium text-[var(--text)]">Djelatnost</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-[var(--hint)]">
                       <Briefcase size={16} />
                     </div>
                     <select
                       value={form.industry}
                       onChange={update('industry')}
-                      className="w-full rounded-lg border border-slate-300 bg-white text-sm pl-9 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                      className="w-full rounded-lg border border-[var(--border)] bg-[var(--surf)] text-sm pl-9 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--border-f)] focus:border-transparent"
                     >
                       <option value="">-- Odaberi --</option>
                       {INDUSTRIES.map(i => (
@@ -222,8 +222,8 @@ export default function OnboardingPage() {
 
           {step === 2 && (
             <>
-              <h2 className="text-lg font-semibold text-slate-900 mb-1">Veličina i lokacija</h2>
-              <p className="text-sm text-slate-500 mb-6">
+              <h2 className="text-lg font-semibold text-[var(--text)] mb-1">Veličina i lokacija</h2>
+              <p className="text-sm text-[var(--muted)] mb-6">
                 Prag 50+ zaposlenika aktivira obvezu Odbora ZNR (čl. 70 ZZnR).
               </p>
 
@@ -286,7 +286,7 @@ export default function OnboardingPage() {
           )}
         </Card>
 
-        <p className="text-center text-xs text-slate-400 mt-4">
+        <p className="text-center text-xs text-[var(--hint)] mt-4">
           Prijavljeni kao: <span className="font-medium">{user?.email ?? '—'}</span>
         </p>
       </div>

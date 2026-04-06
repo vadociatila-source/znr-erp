@@ -59,7 +59,7 @@ export function LegalTooltip({ legalRef, children }: LegalTooltipProps) {
     <div className="relative group inline-flex">
       {children}
       <div className="absolute bottom-full left-0 mb-2 z-50
-                      w-72 p-3 rounded-lg shadow-lg border border-[var(--border)]
+                      w-72 p-3 rounded-lg shadow-2xl border border-[var(--border)]
                       bg-[var(--sunken)] text-[var(--text)] text-xs
                       opacity-0 group-hover:opacity-100 transition-opacity duration-150
                       pointer-events-none">

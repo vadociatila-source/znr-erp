@@ -11,7 +11,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
   if (totalPages <= 1) return null
   return (
     <div className="flex items-center justify-between pt-4">
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-[var(--muted)]">
         Stranica {currentPage} od {totalPages}
       </p>
       <div className="flex gap-2">

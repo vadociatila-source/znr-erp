@@ -73,7 +73,7 @@ export function IncidentForm({ workers, onSubmit, isSubmitting }: Props) {
       </Alert>
 
       <Card padding="lg">
-        <h3 className="text-sm font-semibold text-slate-900 mb-4">Podaci o ozljedi</h3>
+        <h3 className="text-sm font-semibold text-[var(--text)] mb-4">Podaci o ozljedi</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select label="Djelatnik" required error={errors.worker_id}
             options={workers.map(w => ({ value: w.id, label: `${w.first_name} ${w.last_name}` }))}
@@ -90,17 +90,17 @@ export function IncidentForm({ workers, onSubmit, isSubmitting }: Props) {
       </Card>
 
       <Card padding="lg">
-        <h3 className="text-sm font-semibold text-slate-900 mb-4">Opis ozljede</h3>
+        <h3 className="text-sm font-semibold text-[var(--text)] mb-4">Opis ozljede</h3>
         <textarea value={form.description} onChange={update('description')} rows={4} required
-          className="w-full rounded-lg border border-slate-300 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+          className="w-full rounded-lg border border-[var(--border)] text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--border-f)] focus:border-transparent"
           placeholder="Detaljno opišite što se dogodilo..." />
-        {errors.description && <p className="text-xs text-red-600 mt-1">{errors.description}</p>}
+        {errors.description && <p className="text-xs text-[var(--crit-acc)] mt-1">{errors.description}</p>}
       </Card>
 
       <Card padding="lg">
-        <h3 className="text-sm font-semibold text-slate-900 mb-4">Poduzete mjere</h3>
+        <h3 className="text-sm font-semibold text-[var(--text)] mb-4">Poduzete mjere</h3>
         <textarea value={form.immediate_actions} onChange={update('immediate_actions')} rows={3}
-          className="w-full rounded-lg border border-slate-300 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+          className="w-full rounded-lg border border-[var(--border)] text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--border-f)] focus:border-transparent"
           placeholder="Koje mjere su odmah poduzete?" />
       </Card>
 

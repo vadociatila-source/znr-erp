@@ -21,12 +21,12 @@ export default function IzvjescaPage() {
         {/* Inspekcijska mapa — killer feature */}
         <Card padding="lg">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center shrink-0">
-              <FileArchive size={24} className="text-brand-600" />
+            <div className="w-12 h-12 bg-[var(--mg-50)] rounded-xl flex items-center justify-center shrink-0">
+              <FileArchive size={24} className="text-[var(--mg-500)]" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-slate-900">Inspekcijska mapa</h3>
-              <p className="text-sm text-slate-500 mt-1">
+              <h3 className="text-lg font-semibold text-[var(--text)]">Inspekcijska mapa</h3>
+              <p className="text-sm text-[var(--muted)] mt-1">
                 Jedan klik — svi zakonski obvezni dokumenti za inspektora rada.
                 Generirano automatski iz vaših podataka u sustavu.
               </p>
@@ -34,7 +34,7 @@ export default function IzvjescaPage() {
                 <LegalBadge article="čl. 61 ZZnR" deadline="evidencija trajno" />
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-slate-500">
+              <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-[var(--muted)]">
                 <span>Djelatnici (M01)</span>
                 <span>Osposobljavanja (M03)</span>
                 <span>Zdravstveni pregledi (M04)</span>
@@ -51,7 +51,7 @@ export default function IzvjescaPage() {
               >
                 Preuzmi inspekcijsku mapu
               </Button>
-              <p className="text-xs text-slate-400 mt-2">
+              <p className="text-xs text-[var(--hint)] mt-2">
                 MVP verzija: CSV + JSON format. PDF obrasci (EK-1, EK-2, EK-4, EK-5, ZOS) dolaze u Sprint 008.
               </p>
             </div>
@@ -60,8 +60,8 @@ export default function IzvjescaPage() {
 
         {/* Godišnje izvješće — placeholder */}
         <Card padding="lg" className="opacity-60">
-          <h3 className="text-sm font-semibold text-slate-700 mb-1">Godišnje izvješće ZNR</h3>
-          <p className="text-xs text-slate-500">
+          <h3 className="text-sm font-semibold text-[var(--text)] mb-1">Godišnje izvješće ZNR</h3>
+          <p className="text-xs text-[var(--muted)]">
             Statistika: koliko djelatnika, koliko urednih osposobljavanja, koliko pregleda...
             Dolazi u budućoj verziji.
           </p>

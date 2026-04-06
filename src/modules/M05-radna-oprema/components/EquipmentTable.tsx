@@ -23,11 +23,11 @@ interface Props {
 }
 
 export function EquipmentTable({ items, isLoading }: Props) {
-  if (isLoading) return <div className="flex justify-center py-12"><Spinner size="lg" className="text-brand-600" /></div>
+  if (isLoading) return <div className="flex justify-center py-12"><Spinner size="lg" className="text-[var(--mg-500)]" /></div>
 
   if (items.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-500">
+      <div className="text-center py-12 text-[var(--muted)]">
         <p className="text-lg font-medium">Nema opreme</p>
         <p className="text-sm mt-1">Dodajte radnu opremu ili vatrogasne aparate.</p>
       </div>
@@ -57,19 +57,19 @@ export function EquipmentTable({ items, isLoading }: Props) {
           return (
             <Table.Row key={eq.id}>
               <Table.Cell>
-                <span className="font-medium text-slate-900">{eq.name}</span>
-                {eq.manufacturer && <p className="text-xs text-slate-400">{eq.manufacturer} {eq.model ?? ''}</p>}
+                <span className="font-medium text-[var(--text)]">{eq.name}</span>
+                {eq.manufacturer && <p className="text-xs text-[var(--hint)]">{eq.manufacturer} {eq.model ?? ''}</p>}
               </Table.Cell>
               <Table.Cell><span className="text-xs">{typeLabel}</span></Table.Cell>
               <Table.Cell>
-                {eq.serial_number ? <span className="font-mono text-xs">{eq.serial_number}</span> : <span className="text-slate-300">—</span>}
+                {eq.serial_number ? <span className="font-mono text-xs">{eq.serial_number}</span> : <span className="text-[var(--hint)]">—</span>}
               </Table.Cell>
-              <Table.Cell>{eq.location ?? <span className="text-slate-300">—</span>}</Table.Cell>
+              <Table.Cell>{eq.location ?? <span className="text-[var(--hint)]">—</span>}</Table.Cell>
               <Table.Cell>
-                {eq.last_inspection_date ? new Date(eq.last_inspection_date).toLocaleDateString('hr-HR') : <span className="text-slate-300">—</span>}
+                {eq.last_inspection_date ? new Date(eq.last_inspection_date).toLocaleDateString('hr-HR') : <span className="text-[var(--hint)]">—</span>}
               </Table.Cell>
               <Table.Cell>
-                {eq.next_inspection_date ? new Date(eq.next_inspection_date).toLocaleDateString('hr-HR') : <span className="text-slate-300">—</span>}
+                {eq.next_inspection_date ? new Date(eq.next_inspection_date).toLocaleDateString('hr-HR') : <span className="text-[var(--hint)]">—</span>}
               </Table.Cell>
               <Table.Cell><Badge variant={inspBadge.variant}>{inspBadge.label}</Badge></Table.Cell>
               <Table.Cell><Badge variant={stBadge.variant}>{stBadge.label}</Badge></Table.Cell>

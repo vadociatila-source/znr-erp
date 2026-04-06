@@ -22,7 +22,7 @@ interface DashboardStats {
   tasks: { pending: number; critical: number }
 }
 
-function StatCard({ title, value, icon, subtitle, href, color = 'text-brand-600' }: {
+function StatCard({ title, value, icon, subtitle, href, color = 'text-[var(--mg-500)]' }: {
   title: string; value: number; icon: React.ReactNode; subtitle?: string
   href: string; color?: string
 }) {
@@ -32,10 +32,10 @@ function StatCard({ title, value, icon, subtitle, href, color = 'text-brand-600'
         <div className="flex items-start justify-between">
           <div>
             <p className={`text-2xl font-bold ${color}`}>{value}</p>
-            <p className="text-sm font-medium text-slate-700 mt-1">{title}</p>
-            {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
+            <p className="text-sm font-medium text-[var(--text)] mt-1">{title}</p>
+            {subtitle && <p className="text-xs text-[var(--hint)] mt-0.5">{subtitle}</p>}
           </div>
-          <div className="text-slate-300">{icon}</div>
+          <div className="text-[var(--hint)]">{icon}</div>
         </div>
       </Card>
     </Link>
@@ -99,7 +99,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <AppLayout title="Dashboard">
-        <div className="flex justify-center py-12"><Spinner size="lg" className="text-brand-600" /></div>
+        <div className="flex justify-center py-12"><Spinner size="lg" className="text-[var(--mg-500)]" /></div>
       </AppLayout>
     )
   }
@@ -110,26 +110,26 @@ export default function DashboardPage() {
     <AppLayout title="Dashboard">
       {/* Tenant info */}
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-slate-900">{tenant?.name}</h2>
-        <p className="text-sm text-slate-500">
+        <h2 className="text-lg font-semibold text-[var(--text)]">{tenant?.name}</h2>
+        <p className="text-sm text-[var(--muted)]">
           {tenant?.industry} | {tenant?.city} | Plan: {tenant?.plan} | {s.workers.active} aktivnih djelatnika
         </p>
       </div>
 
       {/* Alarmi summary */}
       {(s.tasks.critical > 0 || s.incidents.unreported > 0) && (
-        <Card padding="md" className="mb-6 border-red-300 bg-red-50">
+        <Card padding="md" className="mb-6 border-[var(--crit-b)] bg-[var(--crit-bg)]">
           <div className="flex items-center gap-3">
-            <AlertTriangle size={20} className="text-red-600" />
+            <AlertTriangle size={20} className="text-[var(--crit-acc)]" />
             <div>
-              <p className="text-sm font-semibold text-red-800">Hitne akcije potrebne</p>
-              <p className="text-xs text-red-600">
+              <p className="text-sm font-semibold text-[var(--crit-t)]">Hitne akcije potrebne</p>
+              <p className="text-xs text-[var(--crit-acc)]">
                 {s.tasks.critical > 0 && `${s.tasks.critical} isteklih zadataka`}
                 {s.tasks.critical > 0 && s.incidents.unreported > 0 && ' | '}
                 {s.incidents.unreported > 0 && `${s.incidents.unreported} neprijavljenih ozljeda HZZO-u`}
               </p>
             </div>
-            <Link href="/akcijski-centar" className="ml-auto text-xs text-red-700 font-medium hover:underline">
+            <Link href="/akcijski-centar" className="ml-auto text-xs text-[var(--crit-t)] font-medium hover:underline">
               Otvori Akcijski centar →
             </Link>
           </div>
@@ -151,7 +151,7 @@ export default function DashboardPage() {
           subtitle={s.trainings.expiring > 0 ? `${s.trainings.expiring} uskoro ističe` : 'Sva važeća'}
           icon={<BookOpen size={24} />}
           href="/osposobljavanja"
-          color={s.trainings.expired > 0 ? 'text-red-600' : 'text-brand-600'}
+          color={s.trainings.expired > 0 ? 'text-[var(--crit-acc)]' : 'text-[var(--mg-500)]'}
         />
         <StatCard
           title="Zdravstveni pregledi"
@@ -159,7 +159,7 @@ export default function DashboardPage() {
           subtitle={s.healthChecks.overdue > 0 ? `${s.healthChecks.overdue} isteklih` : 'Svi uredni'}
           icon={<Heart size={24} />}
           href="/zdravstveni-pregledi"
-          color={s.healthChecks.overdue > 0 ? 'text-red-600' : 'text-brand-600'}
+          color={s.healthChecks.overdue > 0 ? 'text-[var(--crit-acc)]' : 'text-[var(--mg-500)]'}
         />
         <StatCard
           title="Radna oprema"
@@ -167,7 +167,7 @@ export default function DashboardPage() {
           subtitle={s.equipment.overdue > 0 ? `${s.equipment.overdue} isteklih pregleda` : 'Svi uredni'}
           icon={<Wrench size={24} />}
           href="/radna-oprema"
-          color={s.equipment.overdue > 0 ? 'text-red-600' : 'text-brand-600'}
+          color={s.equipment.overdue > 0 ? 'text-[var(--crit-acc)]' : 'text-[var(--mg-500)]'}
         />
         <StatCard
           title="Radna mjesta"
@@ -175,7 +175,7 @@ export default function DashboardPage() {
           subtitle={s.positions.overdueRisk > 0 ? `${s.positions.overdueRisk} treba reviziju` : 'Procjene uredne'}
           icon={<Building2 size={24} />}
           href="/radna-mjesta"
-          color={s.positions.overdueRisk > 0 ? 'text-orange-600' : 'text-brand-600'}
+          color={s.positions.overdueRisk > 0 ? 'text-[var(--warn-acc)]' : 'text-[var(--mg-500)]'}
         />
         <StatCard
           title="Ozljede na radu"
@@ -183,7 +183,7 @@ export default function DashboardPage() {
           subtitle={s.incidents.unreported > 0 ? `${s.incidents.unreported} HITNO — HZZO 48h` : 'Sve prijavljeno'}
           icon={<AlertTriangle size={24} />}
           href="/ozljede"
-          color={s.incidents.unreported > 0 ? 'text-red-600' : 'text-brand-600'}
+          color={s.incidents.unreported > 0 ? 'text-[var(--crit-acc)]' : 'text-[var(--mg-500)]'}
         />
         <StatCard
           title="Pending zadaci"
@@ -191,7 +191,7 @@ export default function DashboardPage() {
           subtitle={s.tasks.critical > 0 ? `${s.tasks.critical} kritičnih` : 'Nema hitnih'}
           icon={<Bell size={24} />}
           href="/akcijski-centar"
-          color={s.tasks.critical > 0 ? 'text-red-600' : 'text-brand-600'}
+          color={s.tasks.critical > 0 ? 'text-[var(--crit-acc)]' : 'text-[var(--mg-500)]'}
         />
         <StatCard
           title="Inspekcijska mapa"
@@ -206,36 +206,36 @@ export default function DashboardPage() {
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card padding="md">
           <div className="flex items-center gap-2 mb-2">
-            <CheckCircle size={16} className="text-green-500" />
-            <h4 className="text-sm font-semibold text-slate-700">Brze akcije</h4>
+            <CheckCircle size={16} className="text-[var(--ok-acc)]" />
+            <h4 className="text-sm font-semibold text-[var(--text)]">Brze akcije</h4>
           </div>
           <div className="space-y-2">
-            <Link href="/radnici/novi" className="block text-sm text-brand-600 hover:underline">+ Novi djelatnik</Link>
-            <Link href="/radna-oprema/novo" className="block text-sm text-brand-600 hover:underline">+ Nova oprema</Link>
-            <Link href="/radna-mjesta/novo" className="block text-sm text-brand-600 hover:underline">+ Novo radno mjesto</Link>
-            <Link href="/ozljede/novo" className="block text-sm text-red-600 hover:underline">! Prijavi ozljedu</Link>
+            <Link href="/radnici/novi" className="block text-sm text-[var(--mg-500)] hover:underline">+ Novi djelatnik</Link>
+            <Link href="/radna-oprema/novo" className="block text-sm text-[var(--mg-500)] hover:underline">+ Nova oprema</Link>
+            <Link href="/radna-mjesta/novo" className="block text-sm text-[var(--mg-500)] hover:underline">+ Novo radno mjesto</Link>
+            <Link href="/ozljede/novo" className="block text-sm text-[var(--crit-acc)] hover:underline">! Prijavi ozljedu</Link>
           </div>
         </Card>
         <Card padding="md">
           <div className="flex items-center gap-2 mb-2">
             <Clock size={16} className="text-orange-500" />
-            <h4 className="text-sm font-semibold text-slate-700">Rokovi</h4>
+            <h4 className="text-sm font-semibold text-[var(--text)]">Rokovi</h4>
           </div>
-          <div className="space-y-1 text-xs text-slate-500">
+          <div className="space-y-1 text-xs text-[var(--muted)]">
             <p>Osposobljavanje: 30 dana novi / 4 god usavršavanje</p>
             <p>Zdravstveni pregled: 1-3 godine periodički</p>
             <p>Radna oprema: 3 godine / 1 god vatrogasni</p>
             <p>Procjena rizika: 2 godine revizija</p>
             <p>Vježba evakuacije: 1 godina</p>
-            <p className="text-red-500 font-medium">Ozljeda → HZZO 48 sati!</p>
+            <p className="text-[var(--crit-acc)] font-medium">Ozljeda → HZZO 48 sati!</p>
           </div>
         </Card>
         <Card padding="md">
           <div className="flex items-center gap-2 mb-2">
-            <Building2 size={16} className="text-blue-500" />
-            <h4 className="text-sm font-semibold text-slate-700">Tvrtka</h4>
+            <Building2 size={16} className="text-[var(--info-acc)]" />
+            <h4 className="text-sm font-semibold text-[var(--text)]">Tvrtka</h4>
           </div>
-          <div className="space-y-1 text-xs text-slate-500">
+          <div className="space-y-1 text-xs text-[var(--muted)]">
             <p><strong>{tenant?.name}</strong></p>
             <p>OIB: {tenant?.oib ?? '—'}</p>
             <p>Djelatnost: {tenant?.industry ?? '—'}</p>

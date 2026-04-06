@@ -48,21 +48,21 @@ export default function RegisterPage() {
     setForm(f => ({ ...f, [field]: e.target.value }))
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-12 h-12 bg-brand-600 rounded-2xl flex items-center justify-center shadow-lg">
+          <div className="w-12 h-12 bg-[var(--mg-500)] rounded-[12px] flex items-center justify-center shadow-2xl">
             <Shield size={24} className="text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">ZNR ERP</h1>
-            <p className="text-sm text-slate-500">Registracija</p>
+            <h1 className="text-2xl font-bold text-[var(--text)]">ZNR ERP</h1>
+            <p className="text-sm text-[var(--muted)]">Registracija</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-slate-900 mb-1">Novi račun</h2>
-          <p className="text-sm text-slate-500 mb-6">Kreirajte račun za vašu tvrtku</p>
+        <div className="bg-[var(--surf)] rounded-[12px] border border-[var(--border)]  p-6">
+          <h2 className="text-lg font-semibold text-[var(--text)] mb-1">Novi račun</h2>
+          <p className="text-sm text-[var(--muted)] mb-6">Kreirajte račun za vašu tvrtku</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input label="Ime i prezime" type="text" value={form.fullName}
@@ -83,10 +83,10 @@ export default function RegisterPage() {
             </Button>
           </form>
 
-          <div className="mt-4 pt-4 border-t border-slate-100 text-center">
-            <p className="text-sm text-slate-500">
+          <div className="mt-4 pt-4 border-t border-[var(--border-s)] text-center">
+            <p className="text-sm text-[var(--muted)]">
               Već imaš račun?{' '}
-              <a href="/login" className="text-brand-600 hover:underline font-medium">Prijava</a>
+              <a href="/login" className="text-[var(--mg-500)] hover:underline font-medium">Prijava</a>
             </p>
           </div>
         </div>

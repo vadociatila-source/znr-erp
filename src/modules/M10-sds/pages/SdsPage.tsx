@@ -36,7 +36,7 @@ export default function SdsPage() {
       actions={<Button size="sm" leftIcon={<Plus size={14} />} onClick={() => setShowForm(true)}>Novi SDS</Button>}
     >
       {isLoading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : docs.length === 0 ? (
-        <div className="text-center py-12 text-slate-500">
+        <div className="text-center py-12 text-[var(--muted)]">
           <p className="text-lg font-medium">Nema SDS listova</p>
           <p className="text-sm mt-1">Dodajte sigurnosno-tehničke listove za opasne tvari na radnom mjestu.</p>
         </div>

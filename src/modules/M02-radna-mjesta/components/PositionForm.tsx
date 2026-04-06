@@ -76,7 +76,7 @@ export function PositionForm({ onSubmit, isSubmitting }: Props) {
 
       <Card padding="lg">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-slate-900">Podaci o radnom mjestu</h3>
+          <h3 className="text-sm font-semibold text-[var(--text)]">Podaci o radnom mjestu</h3>
           <LegalBadge article="čl. 18 ZZnR" deadline="revizija min. 2 god" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -86,22 +86,22 @@ export function PositionForm({ onSubmit, isSubmitting }: Props) {
           <Input label="Lokacija" value={form.location} onChange={update('location')} />
         </div>
         <div className="mt-4">
-          <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+          <label className="inline-flex items-center gap-2 text-sm text-[var(--text)]">
             <input type="checkbox" checked={form.is_special_conditions}
               onChange={e => setForm(f => ({ ...f, is_special_conditions: e.target.checked }))}
-              className="rounded border-slate-300 text-brand-600 focus:ring-brand-500" />
+              className="rounded border-[var(--border)] text-[var(--mg-500)] focus:ring-[var(--border-f)]" />
             Posebni uvjeti rada (čl. 34 ZZnR — zahtijeva zdravstveni pregled)
           </label>
         </div>
         <div className="mt-4">
           <textarea value={form.description} onChange={update('description')} rows={3}
-            className="w-full rounded-lg border border-slate-300 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+            className="w-full rounded-lg border border-[var(--border)] text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--border-f)] focus:border-transparent"
             placeholder="Opis radnog mjesta..." />
         </div>
       </Card>
 
       <Card padding="lg">
-        <h3 className="text-sm font-semibold text-slate-900 mb-4">Procjena rizika</h3>
+        <h3 className="text-sm font-semibold text-[var(--text)] mb-4">Procjena rizika</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select label="Preostali rizik" options={[...RISK_LEVELS]} value={form.residual_risk_level}
             onChange={update('residual_risk_level')} placeholder="-- Odaberi --" />

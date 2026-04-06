@@ -49,8 +49,8 @@ export default function SpecijalistDashboardPage() {
       )}
 
       {activeClients.length === 0 && pendingClients.length === 0 && (
-        <div className="text-center py-12 text-slate-500">
-          <Building2 size={48} className="mx-auto mb-3 text-slate-300" />
+        <div className="text-center py-12 text-[var(--muted)]">
+          <Building2 size={48} className="mx-auto mb-3 text-[var(--hint)]" />
           <p className="text-lg font-medium">Nemate klijenata</p>
           <p className="text-sm mt-1">Klijent vas mora pozvati iz svog ZNR ERP sustava.</p>
         </div>
@@ -63,29 +63,29 @@ export default function SpecijalistDashboardPage() {
           }>
             <div className="flex items-start justify-between mb-3">
               <div>
-                <h3 className="font-semibold text-slate-900">{client.tenant_name}</h3>
+                <h3 className="font-semibold text-[var(--text)]">{client.tenant_name}</h3>
                 <Badge variant={client.status === 'active' ? 'success' : 'info'} size="sm">
                   {client.status === 'active' ? 'Aktivan' : 'Na čekanju'}
                 </Badge>
               </div>
-              <Building2 size={20} className="text-slate-400" />
+              <Building2 size={20} className="text-[var(--hint)]" />
             </div>
 
             {client.status === 'active' && (
               <>
                 <div className="flex items-center gap-4 text-sm mt-3">
                   {(client.critical_count ?? 0) > 0 && (
-                    <span className="flex items-center gap-1 text-red-600">
+                    <span className="flex items-center gap-1 text-[var(--crit-acc)]">
                       <AlertTriangle size={14} /> {client.critical_count}
                     </span>
                   )}
                   {(client.urgent_count ?? 0) > 0 && (
-                    <span className="flex items-center gap-1 text-orange-600">
+                    <span className="flex items-center gap-1 text-[var(--warn-acc)]">
                       <Clock size={14} /> {client.urgent_count}
                     </span>
                   )}
                   {!client.critical_count && !client.urgent_count && (
-                    <span className="flex items-center gap-1 text-green-600">
+                    <span className="flex items-center gap-1 text-[var(--ok-acc)]">
                       <CheckCircle size={14} /> Uredno
                     </span>
                   )}

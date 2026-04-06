@@ -49,7 +49,7 @@ export default function EvakuacijaPage() {
       </div>}
     >
       {isLoading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : drills.length === 0 ? (
-        <div className="text-center py-12 text-slate-500">
+        <div className="text-center py-12 text-[var(--muted)]">
           <p className="text-lg font-medium">Nema evidentiranih vježbi</p>
           <p className="text-sm mt-1">Evidentirajte vježbu evakuacije i spašavanja (čl. 45 ZZnR — min. godišnje).</p>
         </div>
@@ -89,12 +89,12 @@ export default function EvakuacijaPage() {
           <Input label="Lokacija" value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} />
         </div>
         <div className="mt-4 space-y-4">
-          <div><label className="text-sm font-medium text-slate-700">Nalazi</label>
+          <div><label className="text-sm font-medium text-[var(--text)]">Nalazi</label>
             <textarea value={form.findings} onChange={e => setForm(f => ({ ...f, findings: e.target.value }))} rows={2}
-              className="w-full mt-1 rounded-lg border border-slate-300 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500" /></div>
-          <div><label className="text-sm font-medium text-slate-700">Korektivne mjere</label>
+              className="w-full mt-1 rounded-lg border border-[var(--border)] text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--border-f)]" /></div>
+          <div><label className="text-sm font-medium text-[var(--text)]">Korektivne mjere</label>
             <textarea value={form.corrective_actions} onChange={e => setForm(f => ({ ...f, corrective_actions: e.target.value }))} rows={2}
-              className="w-full mt-1 rounded-lg border border-slate-300 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500" /></div>
+              className="w-full mt-1 rounded-lg border border-[var(--border)] text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--border-f)]" /></div>
         </div>
       </Modal>
     </AppLayout>

@@ -23,8 +23,8 @@ import toast from 'react-hot-toast'
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</dt>
-      <dd className="text-sm text-slate-900">{value || <span className="text-slate-300">—</span>}</dd>
+      <dt className="text-xs font-medium text-[var(--muted)] uppercase tracking-wider">{label}</dt>
+      <dd className="text-sm text-[var(--text)]">{value || <span className="text-[var(--hint)]">—</span>}</dd>
     </div>
   )
 }
@@ -137,7 +137,7 @@ export default function RadnikProfilPage() {
         <div className="lg:col-span-2 space-y-6">
           <Card padding="lg">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-slate-900">Osobni podaci</h3>
+              <h3 className="text-sm font-semibold text-[var(--text)]">Osobni podaci</h3>
               <Badge variant={worker.status === 'active' ? 'success' : 'default'}>
                 {worker.status === 'active' ? 'Aktivan' : 'Bivši'}
               </Badge>
@@ -160,7 +160,7 @@ export default function RadnikProfilPage() {
           </Card>
 
           <Card padding="lg">
-            <h3 className="text-sm font-semibold text-slate-900 mb-4">Zaposlenje</h3>
+            <h3 className="text-sm font-semibold text-[var(--text)] mb-4">Zaposlenje</h3>
             <dl className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <InfoRow label="Datum zaposlenja" value={
                 worker.employment_date && new Date(worker.employment_date).toLocaleDateString('hr-HR')
@@ -182,8 +182,8 @@ export default function RadnikProfilPage() {
 
           {worker.notes && (
             <Card padding="lg">
-              <h3 className="text-sm font-semibold text-slate-900 mb-2">Napomene</h3>
-              <p className="text-sm text-slate-600 whitespace-pre-wrap">{worker.notes}</p>
+              <h3 className="text-sm font-semibold text-[var(--text)] mb-2">Napomene</h3>
+              <p className="text-sm text-[var(--muted)] whitespace-pre-wrap">{worker.notes}</p>
             </Card>
           )}
         </div>
@@ -194,8 +194,8 @@ export default function RadnikProfilPage() {
           <Card padding="md">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <BookOpen size={16} className="text-blue-500" />
-                <h4 className="text-sm font-semibold text-slate-700">Osposobljavanja</h4>
+                <BookOpen size={16} className="text-[var(--info-acc)]" />
+                <h4 className="text-sm font-semibold text-[var(--text)]">Osposobljavanja</h4>
               </div>
               {worker.status === 'active' && (
                 <Link href={`/radnici/${worker.id}/osposobljavanja/novo`}>
@@ -206,19 +206,19 @@ export default function RadnikProfilPage() {
               )}
             </div>
             {loadingTrainings ? (
-              <p className="text-xs text-slate-400">Učitavanje...</p>
+              <p className="text-xs text-[var(--hint)]">Učitavanje...</p>
             ) : workerTrainings.length > 0 ? (
               <TrainingsTable trainings={workerTrainings} isLoading={false} showWorkerName={false} />
             ) : (
-              <p className="text-xs text-slate-500">Nema unesenih osposobljavanja — čl. 27 ZZnR</p>
+              <p className="text-xs text-[var(--muted)]">Nema unesenih osposobljavanja — čl. 27 ZZnR</p>
             )}
           </Card>
 
           <Card padding="md">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Heart size={16} className="text-red-500" />
-                <h4 className="text-sm font-semibold text-slate-700">Zdravstveni pregledi</h4>
+                <Heart size={16} className="text-[var(--crit-acc)]" />
+                <h4 className="text-sm font-semibold text-[var(--text)]">Zdravstveni pregledi</h4>
               </div>
               {worker.status === 'active' && (
                 <Link href={`/radnici/${worker.id}/pregledi/novo`}>
@@ -229,20 +229,20 @@ export default function RadnikProfilPage() {
               )}
             </div>
             {loadingChecks ? (
-              <p className="text-xs text-slate-400">Učitavanje...</p>
+              <p className="text-xs text-[var(--hint)]">Učitavanje...</p>
             ) : workerChecks.length > 0 ? (
               <HealthChecksTable checks={workerChecks} isLoading={false} showWorkerName={false} />
             ) : (
-              <p className="text-xs text-slate-500">Nema pregleda — čl. 34 ZZnR</p>
+              <p className="text-xs text-[var(--muted)]">Nema pregleda — čl. 34 ZZnR</p>
             )}
           </Card>
 
           <Card padding="md" className="opacity-60">
             <div className="flex items-center gap-2 mb-2">
-              <Wrench size={16} className="text-amber-500" />
-              <h4 className="text-sm font-semibold text-slate-700">Radna oprema</h4>
+              <Wrench size={16} className="text-[var(--warn-acc)]" />
+              <h4 className="text-sm font-semibold text-[var(--text)]">Radna oprema</h4>
             </div>
-            <p className="text-xs text-slate-500">Sprint 006 — PR-04 NN 16/16</p>
+            <p className="text-xs text-[var(--muted)]">Sprint 006 — PR-04 NN 16/16</p>
           </Card>
         </div>
       </div>

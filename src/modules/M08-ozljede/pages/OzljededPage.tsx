@@ -41,7 +41,7 @@ export default function OzljededPage() {
           <Select options={[{ value: 'all', label: 'Svi statusi' }, ...INCIDENT_STATUSES]}
             value={filters.status} onChange={e => updateFilter({ status: e.target.value })} />
         </div>
-        <div className="flex items-center gap-2 text-sm text-slate-500">
+        <div className="flex items-center gap-2 text-sm text-[var(--muted)]">
           <Badge variant="info">{totalCount}</Badge>
           <span>ozljeda</span>
         </div>
