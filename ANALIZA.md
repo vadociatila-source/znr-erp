@@ -49,10 +49,10 @@ Datum: 2026-04-06
 
 | Metrika | Vrijednost |
 |---------|-----------|
-| Git commitova | 20 |
-| Supabase migracije | 13 (001–013) |
+| Git commitova | 23 |
+| Supabase migracije | 13 lokalnih fajlova (001–013) |
 | Supabase tablice | 18 |
-| Legal references | 25 (16 original + 9 ZOP) |
+| Legal references | 25 (16 original + 9 ZOP) — 23 active, 2 deaktivirane |
 | Edge Functions | 1 (send-automation-emails) |
 | pg_cron jobs | 1 (daily 07:00 UTC) |
 | Djelatnici (Carta d.o.o.) | 61 (52 active + 9 former) |

@@ -33,6 +33,15 @@
 | `ba1487c` | Sprint 011: ZNR stručnjak multi-klijent |
 | `ca94087` | Sprint 012: M12 inspekcijska mapa |
 | `d70ce3f` | Sprint 008: PDF obrasci (EK-1, EK-2, EK-4, EK-5, ZOS) |
+| `9445b14` | Dashboard, postavke, M06/M07/M09/M10 puni CRUD |
+| `3eb4fb4` | Akcijski centar agregacija fix + eslint + migracije 010-011 |
+| `2702fda` | Sprint 013: ZOP evidencije + automatizacija email narudžbi |
+| `7e27472` | Edge Function send-automation-emails deployed |
+| `ed764e3` | Deploy prep — SPA redirects, remove API key |
+| `822925e` | CF redeploy trigger |
+| `954eced` | Email FROM → noreply@znr-erp.com |
+| `30b598b` | Remove GH Actions deploy job (CF auto-deploys) |
+| `40dcc6e` | Docs update v5 |
 
 ## Supabase migracije
 
@@ -40,7 +49,7 @@
 |---|-------|------|
 | 001 | schema | 10 tablica, triggeri, indeksi |
 | 002 | rls_policies | RLS + auth_tenant_ids() helper |
-| 003 | legal_seed | 16 zakonskih referenci |
+| 003 | legal_seed | 16 zakonskih referenci (2 deaktivirane u 013) |
 | 004 | audit_triggers | GDPR čl. 5(2) audit log |
 | 005 | onboarding_rpc | create_tenant_with_owner |
 | 006 | harden_search_path | Security remediation (advisor lint) |
@@ -49,6 +58,8 @@
 | 009 | workers_position_fk | FK constraint za PostgREST join |
 | 010 | incidents | Ozljede tablica + 48h HZZO trigger |
 | 011 | specialist_invite_rpc | invite + accept RPC za stručnjake |
+| 012 | environment_evacuations_ozo_sds | M06/M07/M09/M10 tablice |
+| 013 | zop_automation | 9 ZOP legal refs, automation_settings, automation_log, tracking stupci, fire_ext polja |
 
 ## Preostali rad (post-MVP)
 

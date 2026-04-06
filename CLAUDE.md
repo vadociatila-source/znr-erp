@@ -310,8 +310,10 @@ znr-erp/
 │       ├── 003_legal_seed.sql
 │       ├── 004_audit_triggers.sql
 │       ├── 005–009_...              # Moduli i features
-│       ├── 010_incidents.sql        # M08 Ozljede (lokalni file pending)
-│       └── 011_znr_specialist.sql   # Multi-klijent (lokalni file pending)
+│       ├── 010_incidents.sql        # M08 Ozljede + 48h HZZO trigger
+│       ├── 011_specialist_invite_rpc.sql  # ZNR stručnjak multi-klijent
+│       ├── 012_environment_evacuations_ozo_sds.sql  # M06/M07/M09/M10
+│       └── 013_zop_automation.sql   # ZOP legal refs + automation_settings
 │
 ├── docs/
 │   ├── SPRINT_PLAN.md
