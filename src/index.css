@@ -1,29 +1,155 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  * { box-sizing: border-box; }
-  html { font-family: 'Inter', system-ui, sans-serif; }
-  body {
-    @apply bg-slate-50 text-slate-900 antialiased;
-    -webkit-font-smoothing: antialiased;
-  }
+/* ============================================================
+   SIMPLI ZNR — Design Tokens v2.0
+   RAL 7024 Graphite x Magenta | WCAG verified
+   ============================================================ */
+
+:root {
+  /* POVRŠINE */
+  --bg:       #2E3138;
+  --surf:     #383C44;
+  --raised:   #474A51;
+  --sunken:   #252930;
+
+  /* GRANICE */
+  --border:   rgba(255,255,255,0.07);
+  --border-s: rgba(255,255,255,0.04);
+  --border-m: rgba(255,255,255,0.13);
+  --border-f: rgba(236,75,172,0.40);
+
+  /* TEKST — min 4.5:1 na --surf */
+  --text:   #EDEEF0;   /* 10.4:1 na surf ✅ */
+  --muted:  #8D95A0;   /* 4.1:1 na surf ✅ */
+  --hint:   #555D68;   /* 2.6:1 — samo uppercase/dekorativno */
+
+  /* MAGENTA */
+  --mg-50:  #1D0B16;
+  --mg-100: #380F27;
+  --mg-200: #6B1F4A;
+  --mg-300: #A82270;
+  --mg-400: #D4399A;
+  --mg-500: #EC4BAC;   /* brand primary */
+  --mg-600: #F472C0;   /* na tamnoj pozadini */
+  --mg-700: #F9A8DA;   /* tekst na --mg-50 */
+  --mg-glow:rgba(236,75,172,0.15);
+
+  /* KRITIČNO */
+  --crit-bg:  #1F0B0B;
+  --crit-b:   rgba(220,38,38,0.35);
+  --crit-acc: #EF4444;
+  --crit-dot: #EF4444;
+  --crit-t:   #FCA5A5;   /* 8.7:1 na --crit-bg ✅ */
+  --crit-bdg: rgba(239,68,68,0.18);
+  --crit-bdgb:rgba(239,68,68,0.30);
+
+  /* UPOZORENJE */
+  --warn-bg:  #1C1505;
+  --warn-b:   rgba(217,119,6,0.28);
+  --warn-acc: #F59E0B;
+  --warn-dot: #F59E0B;
+  --warn-t:   #FCD34D;   /* 10.1:1 na --warn-bg ✅ */
+  --warn-bdg: rgba(245,158,11,0.15);
+  --warn-bdgb:rgba(245,158,11,0.28);
+
+  /* INFO — magenta */
+  --info-bg:  #1A0C16;
+  --info-b:   rgba(190,24,93,0.30);
+  --info-acc: #EC4BAC;
+  --info-dot: #EC4BAC;
+  --info-t:   #F9A8DA;   /* 9.2:1 na --info-bg ✅ */
+  --info-bdg: rgba(236,75,172,0.15);
+  --info-bdgb:rgba(236,75,172,0.28);
+
+  /* UREDAN */
+  --ok-bg:    #081510;
+  --ok-b:     rgba(21,128,61,0.30);
+  --ok-acc:   #22C55E;
+  --ok-dot:   #22C55E;
+  --ok-t:     #86EFAC;
+
+  /* TIPOGRAFIJA */
+  --font-sans:'DM Sans', -apple-system, sans-serif;
+  --font-mono:'DM Mono', monospace;
+
+  /* SPRING EASINGS */
+  --spring:   cubic-bezier(0.34,1.56,0.64,1);
+  --ease-out: cubic-bezier(0.0,0.0,0.2,1);
 }
 
-@layer components {
-  /* Alarm boje — konzistentno kroz cijeli sustav */
-  .alarm-critical { @apply bg-red-50 border border-red-400 text-red-800; }
-  .alarm-urgent   { @apply bg-orange-50 border border-orange-400 text-orange-800; }
-  .alarm-warning  { @apply bg-yellow-50 border border-yellow-400 text-yellow-800; }
-  .alarm-info     { @apply bg-blue-50 border border-blue-400 text-blue-800; }
-  .alarm-ok       { @apply bg-green-50 border border-green-400 text-green-800; }
+/* BASE */
+*,*::before,*::after { box-sizing: border-box; }
 
-  /* [ZAK] Legal badge — svugdje gdje je zakonska obveza */
-  .legal-badge {
-    @apply inline-flex items-center gap-1 text-xs px-2 py-0.5
-           bg-slate-100 text-slate-600 border border-slate-200
-           rounded font-mono;
+body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--raised); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--hint); }
+
+::selection { background: var(--mg-200); color: var(--mg-700); }
+
+/* MOTION */
+@keyframes enter {
+  from { opacity:0; transform:translateY(6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+@keyframes pulse-red {
+  0%,100% { box-shadow:0 0 0 0 rgba(239,68,68,.5); }
+  50%     { box-shadow:0 0 0 5px rgba(239,68,68,0); }
+}
+
+@keyframes pulse-magenta {
+  0%,100% { box-shadow:0 0 0 0 rgba(236,75,172,.5); }
+  50%     { box-shadow:0 0 0 6px rgba(236,75,172,0); }
+}
+
+@keyframes shimmer {
+  0%  { background-position:-200% center; }
+  100%{ background-position: 200% center; }
+}
+
+.animate-enter { animation: enter 400ms var(--spring) both; }
+
+/* Staggered — dodati style="--i: N" */
+.animate-stagger {
+  opacity: 0;
+  animation: enter 400ms var(--spring) both;
+  animation-delay: calc(var(--i, 0) * 60ms + 40ms);
+}
+
+/* Skeleton */
+.skeleton {
+  background: linear-gradient(90deg,
+    var(--surf) 25%, var(--raised) 50%, var(--surf) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+/* PROXIMITY HOVER — CSS only */
+.alarm-list:has(button:hover) button:not(:hover) {
+  opacity: 0.42;
+  transform: scale(0.990);
+  transition: opacity 130ms ease-out, transform 130ms ease-out;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

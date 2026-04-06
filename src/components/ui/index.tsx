@@ -6,6 +6,8 @@ export { Select } from './Select'
 export type { SelectOption } from './Select'
 export { Modal } from './Modal'
 export { Table } from './Table'
+export { AlarmCard } from './AlarmCard'
+export { StatCard } from './StatCard'
 
 // ── Input ──────────────────────────────────────────────────────────────────
 
@@ -23,14 +25,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor={inputId} className="text-sm font-medium text-slate-700">
+        <label htmlFor={inputId} className="text-[12px] font-[500] text-[var(--muted)]">
           {label}
-          {props.required && <span className="text-red-500 ml-0.5">*</span>}
+          {props.required && <span className="text-[var(--crit-acc)] ml-0.5">*</span>}
         </label>
       )}
       <div className="relative">
         {leftAddon && (
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-[var(--hint)]">
             {leftAddon}
           </div>
         )}
@@ -38,21 +40,22 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
           ref={ref}
           id={inputId}
           className={clsx(
-            'w-full rounded-lg border text-sm transition-colors',
-            'focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent',
-            'disabled:bg-slate-50 disabled:text-slate-400',
-            'placeholder:text-slate-400',
+            'w-full rounded-[8px] border-[0.5px] text-[13px] transition-colors',
+            'bg-[var(--raised)] text-[var(--text)]',
+            'focus:outline-none focus:ring-2 focus:ring-[var(--border-f)] focus:border-transparent',
+            'disabled:opacity-40',
+            'placeholder:text-[var(--hint)]',
             error
-              ? 'border-red-400 bg-red-50'
-              : 'border-slate-300 bg-white',
+              ? 'border-[var(--crit-b)] bg-[var(--crit-bg)]'
+              : 'border-[var(--border)]',
             leftAddon ? 'pl-9 pr-3 py-2' : 'px-3 py-2',
             className
           )}
           {...props}
         />
       </div>
-      {error && <p className="text-xs text-red-600">{error}</p>}
-      {hint && !error && <p className="text-xs text-slate-500">{hint}</p>}
+      {error && <p className="text-[11px] text-[var(--crit-t)]">{error}</p>}
+      {hint && !error && <p className="text-[11px] text-[var(--hint)]">{hint}</p>}
     </div>
   )
 })
@@ -73,9 +76,9 @@ export function Card({ children, className, padding = 'md', onClick }: CardProps
   return (
     <div
       className={clsx(
-        'bg-white rounded-xl border border-slate-200 shadow-sm',
+        'bg-[var(--surf)] rounded-[10px] border-[0.5px] border-[var(--border)]',
         cardPadding[padding],
-        onClick && 'cursor-pointer',
+        onClick && 'cursor-pointer hover:-translate-y-[1px] hover:border-[var(--border-m)] transition-all duration-200',
         className
       )}
       onClick={onClick}
@@ -97,19 +100,19 @@ interface BadgeProps {
 }
 
 const badgeVariants: Record<BadgeVariant, string> = {
-  default: 'bg-slate-100 text-slate-700',
-  success: 'bg-green-100 text-green-700',
-  warning: 'bg-yellow-100 text-yellow-700',
-  danger:  'bg-red-100 text-red-700',
-  info:    'bg-blue-100 text-blue-700',
-  purple:  'bg-purple-100 text-purple-700',
+  default: 'bg-[var(--raised)] text-[var(--muted)] border-[var(--border)]',
+  success: 'bg-[var(--ok-bg)] text-[var(--ok-t)] border-[var(--ok-b)]',
+  warning: 'bg-[var(--warn-bg)] text-[var(--warn-t)] border-[var(--warn-b)]',
+  danger:  'bg-[var(--crit-bg)] text-[var(--crit-t)] border-[var(--crit-b)]',
+  info:    'bg-[var(--info-bg)] text-[var(--info-t)] border-[var(--info-b)]',
+  purple:  'bg-[var(--mg-50)] text-[var(--mg-700)] border-[rgba(236,75,172,.3)]',
 }
 
 export function Badge({ variant = 'default', size = 'sm', children, className }: BadgeProps) {
   return (
     <span className={clsx(
-      'inline-flex items-center font-medium rounded-full',
-      size === 'sm' ? 'px-2 py-0.5 text-xs' : 'px-2.5 py-1 text-sm',
+      'inline-flex items-center font-[500] rounded-full border-[0.5px]',
+      size === 'sm' ? 'px-2 py-0.5 text-[10px]' : 'px-2.5 py-1 text-[11px]',
       badgeVariants[variant],
       className
     )}>
@@ -123,7 +126,7 @@ export function Badge({ variant = 'default', size = 'sm', children, className }:
 export function Spinner({ size = 'md', className }: { size?: 'sm' | 'md' | 'lg', className?: string }) {
   const sizes = { sm: 'h-4 w-4', md: 'h-6 w-6', lg: 'h-8 w-8' }
   return (
-    <svg className={clsx('animate-spin', sizes[size], className)} fill="none" viewBox="0 0 24 24">
+    <svg className={clsx('animate-spin text-[var(--mg-500)]', sizes[size], className)} fill="none" viewBox="0 0 24 24">
       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
     </svg>
@@ -140,21 +143,21 @@ interface AlertProps {
 }
 
 const alertStyles: Record<string, string> = {
-  info:    'bg-blue-50 border-blue-400 text-blue-800',
-  success: 'bg-green-50 border-green-400 text-green-800',
-  warning: 'bg-yellow-50 border-yellow-400 text-yellow-800',
-  danger:  'bg-red-50 border-red-400 text-red-800',
+  info:    'bg-[var(--info-bg)] border-[var(--info-b)] text-[var(--info-t)]',
+  success: 'bg-[var(--ok-bg)] border-[var(--ok-b)] text-[var(--ok-t)]',
+  warning: 'bg-[var(--warn-bg)] border-[var(--warn-b)] text-[var(--warn-t)]',
+  danger:  'bg-[var(--crit-bg)] border-[var(--crit-b)] text-[var(--crit-t)]',
 }
 
 export function Alert({ variant = 'info', title, children, className }: AlertProps) {
   return (
     <div className={clsx(
-      'rounded-lg border p-4',
+      'rounded-[9px] border-[0.5px] p-4',
       alertStyles[variant],
       className
     )}>
-      {title && <p className="font-semibold text-sm mb-1">{title}</p>}
-      <div className="text-sm">{children}</div>
+      {title && <p className="font-[500] text-[13px] mb-1">{title}</p>}
+      <div className="text-[12px]">{children}</div>
     </div>
   )
 }

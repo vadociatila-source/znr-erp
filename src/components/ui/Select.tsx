@@ -22,14 +22,14 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor={selectId} className="text-sm font-medium text-slate-700">
+        <label htmlFor={selectId} className="text-[12px] font-[500] text-[var(--muted)]">
           {label}
-          {props.required && <span className="text-red-500 ml-0.5">*</span>}
+          {props.required && <span className="text-[var(--crit-acc)] ml-0.5">*</span>}
         </label>
       )}
       <div className="relative">
         {leftAddon && (
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-[var(--hint)]">
             {leftAddon}
           </div>
         )}
@@ -37,12 +37,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
           ref={ref}
           id={selectId}
           className={clsx(
-            'w-full rounded-lg border text-sm transition-colors appearance-none',
-            'focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent',
-            'disabled:bg-slate-50 disabled:text-slate-400',
-            error
-              ? 'border-red-400 bg-red-50'
-              : 'border-slate-300 bg-white',
+            'w-full rounded-[8px] border-[0.5px] text-[13px] transition-colors appearance-none',
+            'bg-[var(--raised)] text-[var(--text)]',
+            'focus:outline-none focus:ring-2 focus:ring-[var(--border-f)] focus:border-transparent',
+            'disabled:opacity-40',
+            error ? 'border-[var(--crit-b)]' : 'border-[var(--border)]',
             leftAddon ? 'pl-9 pr-8 py-2' : 'pl-3 pr-8 py-2',
             className
           )}
@@ -53,14 +52,14 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}
         </select>
-        <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-slate-400">
+        <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-[var(--hint)]">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M6 9l6 6 6-6" />
           </svg>
         </div>
       </div>
-      {error && <p className="text-xs text-red-600">{error}</p>}
-      {hint && !error && <p className="text-xs text-slate-500">{hint}</p>}
+      {error && <p className="text-[11px] text-[var(--crit-t)]">{error}</p>}
+      {hint && !error && <p className="text-[11px] text-[var(--hint)]">{hint}</p>}
     </div>
   )
 })

@@ -12,11 +12,7 @@ interface ModalProps {
   footer?: React.ReactNode
 }
 
-const sizeStyles = {
-  sm: 'max-w-sm',
-  md: 'max-w-lg',
-  lg: 'max-w-2xl',
-}
+const sizeStyles = { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl' }
 
 export function Modal({ isOpen, onClose, title, children, size = 'md', footer }: ModalProps) {
   const handleEscape = useCallback((e: KeyboardEvent) => {
@@ -38,37 +34,24 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', footer }:
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 transition-opacity"
-        onClick={onClose}
-      />
-
-      {/* Panel */}
+      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
       <div className={clsx(
-        'relative w-full bg-white rounded-xl shadow-xl',
-        'animate-in fade-in zoom-in-95 duration-150',
+        'relative w-full bg-[var(--surf)] rounded-[12px] border-[0.5px] border-[var(--border)] shadow-2xl',
+        'animate-enter',
         sizeStyles[size]
       )}>
-        {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-            <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-            <button
-              onClick={onClose}
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-            >
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-s)]">
+            <h2 className="text-[15px] font-[500] text-[var(--text)]">{title}</h2>
+            <button onClick={onClose}
+              className="p-1 rounded-lg text-[var(--hint)] hover:text-[var(--text)] hover:bg-[var(--raised)] transition-colors">
               <X size={18} />
             </button>
           </div>
         )}
-
-        {/* Body */}
         <div className="px-6 py-4">{children}</div>
-
-        {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[var(--border-s)]">
             {footer}
           </div>
         )}

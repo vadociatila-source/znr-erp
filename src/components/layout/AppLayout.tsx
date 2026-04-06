@@ -48,24 +48,26 @@ function SidebarItem({ item, isActive }: SidebarItemProps) {
     <Link
       href={item.href}
       className={clsx(
-        'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+        'flex items-center gap-3 px-3 py-2 rounded-[8px] text-[13px] transition-all duration-150',
         'group relative',
         isActive
-          ? 'bg-brand-600 text-white'
-          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+          ? 'bg-[var(--mg-50)] text-[var(--mg-600)] font-[500] border-r-[2px] border-[var(--mg-500)]'
+          : 'text-[var(--muted)] hover:bg-[var(--raised)] hover:text-[var(--text)]'
       )}
     >
       <span className={clsx(
         'shrink-0',
-        isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-600'
+        isActive ? 'text-[var(--mg-500)]' : 'text-[var(--hint)] group-hover:text-[var(--muted)]'
       )}>
         {item.icon}
       </span>
-      <span className="flex-1 font-medium">{item.label}</span>
+      <span className="flex-1">{item.label}</span>
       {item.badge !== undefined && item.badge > 0 && (
         <span className={clsx(
-          'text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[20px] text-center',
-          isActive ? 'bg-white text-brand-600' : 'bg-red-500 text-white'
+          'text-[9px] font-[500] rounded-full px-1.5 py-0.5 min-w-[20px] text-center',
+          isActive
+            ? 'bg-[var(--mg-500)] text-white'
+            : 'bg-[var(--crit-bdg)] text-[var(--crit-t)]'
         )}>
           {item.badge > 99 ? '99+' : item.badge}
         </span>
@@ -85,37 +87,37 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="flex flex-col w-64 h-screen bg-white border-r border-slate-200 shrink-0">
+    <aside className="flex flex-col w-[200px] h-screen bg-[var(--surf)] border-r border-[var(--border-s)] shrink-0">
       {/* Logo / Brand */}
-      <div className="flex items-center gap-2 px-4 py-4 border-b border-slate-100">
-        <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
+      <div className="flex items-center gap-2 px-4 py-4 border-b border-[var(--border-s)]">
+        <div className="w-8 h-8 bg-[var(--mg-500)] rounded-lg flex items-center justify-center shadow-[0_2px_8px_var(--mg-glow)]">
           <Shield size={16} className="text-white" />
         </div>
         <div>
-          <p className="text-sm font-bold text-slate-900">ZNR ERP</p>
-          <p className="text-xs text-slate-500 truncate max-w-[140px]">
+          <p className="text-[15px] font-[500] text-[var(--mg-500)]">ZNR ERP</p>
+          <p className="text-[11px] text-[var(--hint)] truncate max-w-[120px]">
             {activeTenant?.name ?? 'Učitavanje...'}
           </p>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+      <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-0.5">
         {/* Dashboard */}
         <Link
           href="/"
           className={clsx(
-            'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors mb-3',
+            'flex items-center gap-3 px-3 py-2 rounded-[8px] text-[13px] transition-all duration-150 mb-3',
             location === '/'
-              ? 'bg-brand-600 text-white'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-[var(--mg-50)] text-[var(--mg-600)] font-[500] border-r-[2px] border-[var(--mg-500)]'
+              : 'text-[var(--muted)] hover:bg-[var(--raised)] hover:text-[var(--text)]'
           )}
         >
           <LayoutDashboard size={18} />
-          <span className="font-medium">Dashboard</span>
+          <span>Dashboard</span>
         </Link>
 
-        <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 mb-1">
+        <div className="text-[9px] font-[500] uppercase tracking-[0.09em] text-[var(--hint)] px-3 mb-1">
           ZNR Moduli
         </div>
 
@@ -129,10 +131,10 @@ export function Sidebar() {
       </nav>
 
       {/* User + Logout */}
-      <div className="border-t border-slate-100 p-3">
+      <div className="border-t border-[var(--border-s)] p-2">
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+          className="flex items-center gap-3 w-full px-3 py-2 rounded-[8px] text-[13px] text-[var(--muted)] hover:bg-[var(--crit-bg)] hover:text-[var(--crit-t)] transition-colors"
         >
           <LogOut size={16} />
           <span>Odjava</span>
@@ -153,28 +155,28 @@ interface AppLayoutProps {
 
 export function AppLayout({ children, title, breadcrumb, actions }: AppLayoutProps) {
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50">
+    <div className="flex h-screen overflow-hidden bg-[var(--bg)]">
       <Sidebar />
 
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Page header */}
         {(title || breadcrumb || actions) && (
-          <header className="bg-white border-b border-slate-200 px-6 py-4 shrink-0">
+          <header className="bg-[var(--surf)] border-b border-[var(--border-s)] px-6 py-4 shrink-0">
             {breadcrumb && breadcrumb.length > 0 && (
-              <nav className="flex items-center gap-1 text-xs text-slate-500 mb-1">
+              <nav className="flex items-center gap-1 text-[11px] text-[var(--hint)] mb-1">
                 {breadcrumb.map((crumb, i) => (
                   <span key={i} className="flex items-center gap-1">
                     {i > 0 && <ChevronRight size={12} />}
                     {crumb.href
-                      ? <Link href={crumb.href} className="hover:text-slate-900">{crumb.label}</Link>
-                      : <span>{crumb.label}</span>
+                      ? <Link href={crumb.href} className="hover:text-[var(--text)]">{crumb.label}</Link>
+                      : <span className="text-[var(--muted)]">{crumb.label}</span>
                     }
                   </span>
                 ))}
               </nav>
             )}
             <div className="flex items-center justify-between">
-              {title && <h1 className="text-xl font-semibold text-slate-900">{title}</h1>}
+              {title && <h1 className="text-[18px] font-[500] text-[var(--text)]">{title}</h1>}
               {actions && <div className="flex items-center gap-3">{actions}</div>}
             </div>
           </header>
