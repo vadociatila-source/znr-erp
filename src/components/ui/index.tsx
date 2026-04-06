@@ -68,13 +68,15 @@ interface CardProps {
   className?: string
   padding?: 'none' | 'sm' | 'md' | 'lg'
   onClick?: () => void
+  style?: React.CSSProperties
 }
 
 const cardPadding = { none: '', sm: 'p-3', md: 'p-4', lg: 'p-6' }
 
-export function Card({ children, className, padding = 'md', onClick }: CardProps) {
+export function Card({ children, className, padding = 'md', onClick, style }: CardProps) {
   return (
     <div
+      style={style}
       className={clsx(
         'bg-[var(--surf)] rounded-[10px] border-[0.5px] border-[var(--border)]',
         cardPadding[padding],
