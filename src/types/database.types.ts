@@ -284,6 +284,60 @@ export type Database = {
         }
         Relationships: []
       }
+      tasks: {
+        Row: {
+          created_at: string
+          description: string | null
+          due_date: string | null
+          id: string
+          legal_ref_code: string | null
+          status: string
+          tenant_id: string
+          title: string
+          updated_at: string
+          worker_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          legal_ref_code?: string | null
+          status?: string
+          tenant_id: string
+          title: string
+          updated_at?: string
+          worker_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          legal_ref_code?: string | null
+          status?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+          worker_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_worker_id_fkey"
+            columns: ["worker_id"]
+            isOneToOne: false
+            referencedRelation: "workers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_users: {
         Row: {
           created_at: string
@@ -599,6 +653,13 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "workers_position_id_fkey"
+            columns: ["position_id"]
+            isOneToOne: false
+            referencedRelation: "work_positions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "workers_tenant_id_fkey"
             columns: ["tenant_id"]
