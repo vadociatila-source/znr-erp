@@ -93,7 +93,7 @@ https://github.com/vadociatila-source/znr-erp/settings/secrets/actions
 | `VITE_SUPABASE_ANON_KEY` | eyJ... (iz Settings → API) |
 | `CLOUDFLARE_API_TOKEN` | (vidi Korak 7) |
 | `CLOUDFLARE_ACCOUNT_ID` | (vidi Korak 7) |
-| `RESEND_API_KEY` | `re_i6NP4HDn_iNnfLsmbC7aPXCiKGnQ78bNi` |
+| `RESEND_API_KEY` | (iz Resend dashboarda — NIKAD u kodu!) |
 
 ---
 
