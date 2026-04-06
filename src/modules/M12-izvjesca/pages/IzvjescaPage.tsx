@@ -1,18 +1,71 @@
-// [ZAK: čl. 61 ZZnR] Modul M12 — Izvješća
+// M12 — Izvješća + Inspekcijska mapa
+// Jedan klik → svi zakonski obvezni dokumenti za inspektora
+// MVP: CSV/JSON export. Sprint 008 će dodati PDF generiranje.
+
+import { FileArchive, Download } from 'lucide-react'
 import { AppLayout } from '@/components/layout/AppLayout'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/index'
 import { LegalBadge } from '@/components/legal/LegalBadge'
-import { Construction } from 'lucide-react'
+import { useInspekcijskaMapa } from '../hooks/useInspekcijskaMapa'
 
 export default function IzvjescaPage() {
+  const { exportZip, isExporting } = useInspekcijskaMapa()
+
   return (
-    <AppLayout title="Izvješća" breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Izvješća' }]}>
-      <div className="flex flex-col items-center justify-center h-64 text-center gap-4">
-        <Construction size={48} className="text-slate-300" />
-        <div>
-          <h2 className="text-lg font-semibold text-slate-700">M12 — Izvješća</h2>
-          <p className="text-sm text-slate-500 mt-1">U razvoju — vidi SPRINT_PLAN.md</p>
-        </div>
-        <LegalBadge article="čl. 61 ZZnR" />
+    <AppLayout
+      title="Izvješća"
+      breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Izvješća' }]}
+    >
+      <div className="max-w-2xl space-y-6">
+        {/* Inspekcijska mapa — killer feature */}
+        <Card padding="lg">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center shrink-0">
+              <FileArchive size={24} className="text-brand-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-slate-900">Inspekcijska mapa</h3>
+              <p className="text-sm text-slate-500 mt-1">
+                Jedan klik — svi zakonski obvezni dokumenti za inspektora rada.
+                Generirano automatski iz vaših podataka u sustavu.
+              </p>
+              <div className="flex flex-wrap gap-2 mt-3">
+                <LegalBadge article="čl. 61 ZZnR" deadline="evidencija trajno" />
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-slate-500">
+                <span>Djelatnici (M01)</span>
+                <span>Osposobljavanja (M03)</span>
+                <span>Zdravstveni pregledi (M04)</span>
+                <span>Radna oprema (M05)</span>
+                <span>Radna mjesta (M02)</span>
+                <span>Ozljede na radu (M08)</span>
+              </div>
+
+              <Button
+                className="mt-4"
+                leftIcon={<Download size={16} />}
+                onClick={exportZip}
+                isLoading={isExporting}
+              >
+                Preuzmi inspekcijsku mapu
+              </Button>
+              <p className="text-xs text-slate-400 mt-2">
+                MVP verzija: CSV + JSON format. PDF obrasci (EK-1, EK-2, EK-4, EK-5, ZOS) dolaze u Sprint 008.
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Godišnje izvješće — placeholder */}
+        <Card padding="lg" className="opacity-60">
+          <h3 className="text-sm font-semibold text-slate-700 mb-1">Godišnje izvješće ZNR</h3>
+          <p className="text-xs text-slate-500">
+            Statistika: koliko djelatnika, koliko urednih osposobljavanja, koliko pregleda...
+            Dolazi u budućoj verziji.
+          </p>
+        </Card>
       </div>
     </AppLayout>
   )
