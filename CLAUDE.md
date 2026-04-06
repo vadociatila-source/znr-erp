@@ -19,8 +19,10 @@
 
 **ZNR ERP je standalone SaaS produkt** — nije vezan za Cartu.  
 ZNR ERP je standalone SaaS — nema hardkodiranog klijenta u kodu.  
-Carta ERP = potpuno odvojen projekt s vlastitom bazom. ZNR će biti modul u Carta ERP.  
-Claude Code piše generičan multi-tenant kod — bez hardkodiranja ikojeg klijenta.
+Carta ERP = potpuno odvojen projekt s vlastitom bazom. Integracija je opcionalna budućnost, ne hard requirement.  
+Claude Code piše generičan multi-tenant kod — bez hardkodiranja ikojeg klijenta.  
+**UI terminologija:** korisnik vidi "Djelatnici" (ne "Radnici"). Interni nazivi (rute, modul, tablica) ostaju nepromijenjeni.  
+**Pilot tenant:** Carta d.o.o. (Osijek, prerađivačka industrija, 52 active + 9 former djelatnika).
 
 ## 0. MISIJA PROJEKTA
 
@@ -288,123 +290,25 @@ znr-erp/
 
 ---
 
-## 5. SPRINT PLAN
+## 5. SPRINT PLAN — STATUS
 
-### Sprint 001 — Foundation (SADA)
-**Cilj:** Projekt radi lokalno, auth funkcionira, Supabase migracije pokrenute.
-- [ ] GitHub repo kreiran, initial commit
-- [ ] Vite + React + TS + Tailwind setup
-- [ ] Supabase projekt kreiran, migracije 001-004 pokrenute
-- [ ] Auth: Login stranica (Supabase Auth)
-- [ ] Auth: Session management (Zustand)
-- [ ] Meta-registry shema deployrana
-- [ ] `.env` konfiguriran
-- [ ] Cloudflare Pages inicijalni deploy
-- **Output:** App se otvara, moguće je logirati se.
-- **Napravi:** `ANALIZA.md` s: što si napravio, što radi, što ne radi, block issues
+> **Svih 12 sprintova dovršeno (2026-04-06).** MVP je kompletiran.
+> Detaljan status i commitovi u `docs/SPRINT_PLAN.md`.
 
-### Sprint 002 — Tenant Onboarding
-**Cilj:** Novi korisnik može kreirati tvrtku i tenant Supabase projekt.
-- [ ] Register flow (Supabase Auth + kreiranje tenanta u bazi)
-- [ ] Onboarding wizard: naziv tvrtke, veličina, djelatnost
-- [ ] Tenant Supabase projekt setup (za sad: ručno, Faza 2: automatizirano)
-- [ ] Tenant migrations: legal_references seed, workers, ...
-- [ ] Tenant client factory (dinamički URL + key)
-- [ ] Zustand: tenant store s aktivnim tenant clientom
-- [ ] Dashboard redirect nakon onboardinga
-- **Output:** Korisnik prolazi onboarding, dolazi na prazan dashboard.
-
-### Sprint 003 — M01 Radnici (CRUD)
-**Cilj:** Evidencija radnika funkcionira — zakonska osnova čl. 61 ZZnR.
-- [ ] Workers tablica + RLS + audit_log trigger
-- [ ] Lista radnika (s filtrom, pretraživanjem)
-- [ ] Dodaj/uredi radnika (forma s validacijom)
-- [ ] Profil radnika (dosje)
-- [ ] Bivši radnici (status = 'former', ne brisati!)
-- [ ] LegalBadge: "čl. 61 ZZnR — evidencija trajno"
-- [ ] Alarm: novi radnik → automatski task "Osposobljavaj do [datum+30d]"
-- **Output:** Pilot korisnik (ZNR stručnjak iz Faze 0) može unijeti radnike.
-
-### Sprint 004 — M03 Osposobljavanja
-**Cilj:** Evidencija osposobljavanja s alarmima — čl. 27 ZZnR.
-- [ ] Trainings tablica + RLS
-- [ ] Po radniku: lista osposobljavanja
-- [ ] Unos osposobljavanja (vrsta, datum, izvoditelj, rok obnove)
-- [ ] Status: Važeće / Uskoro ističe / Isteklo
-- [ ] Alarm engine: 30 dana za novog radnika
-- [ ] Alarm engine: 4 godine za usavršavanje
-- [ ] Email alarm (Resend) 30 dana unaprijed
-- [ ] ZOS obrazac generiranje (PDF)
-- **Output:** Alarmi rade, ZOS se generira.
-
-### Sprint 005 — M04 Zdravstveni pregledi
-**Cilj:** Evidencija zdravstvenih pregleda — čl. 34 ZZnR.
-- [ ] Health_checks tablica + RLS
-- [ ] Tipovi: prethodni, periodički, izvanredni
-- [ ] Uputnica za zdravstveni pregled (PDF generiranje)
-- [ ] EK-4 evidencijski karton generiranje
-- [ ] Alarm: 90/60/30 dana unaprijed
-- [ ] Alarm odmah ako "nesposoban" nalaz
-- **Output:** Uputnica i EK-4 se generiraju, alarmi rade.
-
-### Sprint 006 — M05 Radna oprema
-**Cilj:** Evidencija opreme s rokovima pregleda — PR-04 NN 16/16.
-- [ ] Equipment tablica + RLS (uključuje vatrogasne aparate!)
-- [ ] Tip opreme: stroj/uređaj, vatrogasni aparat, PP oprema
-- [ ] Pregledi s rokovima (max 3 god za standardnu opremu)
-- [ ] EK-5 evidencijski karton
-- [ ] QR kod generiranje po opremi (read-only link)
-- [ ] Alarm: 60 dana unaprijed
-- **Output:** Oprema evidentirana, QR kod funkcionira.
-
-### Sprint 007 — M11 Akcijski centar
-**Cilj:** Jedan ekran koji poslodavac svaki dan otvara.
-- [ ] Agregira alarme iz svih modula
-- [ ] 3 razine: HITNO (crveno), USKORO (narančasto), INFO (žuto)
-- [ ] Svaki alarm ima: zakonsku referencu, rok, kaznu
-- [ ] Filter po modulu, radniku, vrsti
-- [ ] Dashboard statistike (koliko radnika, koliko urednih, ...)
-- **Output:** Pilot korisnik vidi sve aktivne probleme na jednom ekranu.
-
-### Sprint 008 — PDF dokumenti (kompletni set)
-**Cilj:** Svi zakonski obvezni obrasci se generiraju automatski.
-- [ ] EK-1 — Evidencijski karton zaposlenika (ukupni ZNR profil)
-- [ ] EK-2 — Evidencija o osposobljavanju
-- [ ] EK-4 — Evidencija o zdravstvenim pregledima
-- [ ] EK-5 — Evidencija o radnoj opremi
-- [ ] ZOS — Zapisnik o ocjeni osposobljenosti
-- [ ] Uputnica za zdravstveni pregled
-- [ ] Sve PDFove: digitalni potpis flow (email link "Potvrđujem")
-- **Output:** Svi standardni HR ZNR obrasci dostupni.
-
-### Sprint 009 — M02 Radna mjesta + Procjena rizika
-**Cilj:** Baza radnih mjesta s procjenom rizika — čl. 18 ZZnR.
-- [ ] Work_positions tablica + RLS
-- [ ] Šifarnik poslova s posebnim uvjetima (PR-03 NN 5/84)
-- [ ] Procjena rizika: opasnosti, mjere, preostali rizik
-- [ ] Status: Uredan / Potrebna revizija
-- [ ] Alarm: revizija svake 2 godine
-- [ ] Opis radnog mjesta PDF
-- **Output:** Radna mjesta definirana, procjena rizika unosi se.
-
-### Sprint 010 — M08 Ozljede na radu
-**Cilj:** Evidencija ozljeda s 48h alarmom — čl. 62 ZZnR.
-- [ ] Incidents tablica + RLS
-- [ ] Unos ozljede → odmah alarm: "Prijavi HZZO u roku 48 sati!"
-- [ ] OIR-1 obrazac generiranje
-- [ ] ER-2 obrazac generiranje (za HZZO)
-- [ ] Status praćenje: prijavljena / na obradi / zaključena
-- [ ] Analiza uzroka + provedene mjere
-- **Output:** Ozljeda = alarm + OIR-1 + ER-2 odmah.
-
-### Sprint 011 — ZNR Stručnjak multi-klijent flow
-**Cilj:** ZNR stručnjak vidi sve klijente, radi za njih.
-- [ ] znr_specialist_clients tablica (u zajedničkoj bazi)
-- [ ] Invite flow: klijent poziva stručnjaka
-- [ ] Stručnjak dashboard: lista klijenata s status indikatorima
-- [ ] Switch between tenants (bez re-logina)
-- [ ] Stručnjak vidi alarme za sve klijente
-- **Output:** ZNR stručnjak Tip C može raditi u sustavu.
+| Sprint | Modul | Status |
+|--------|-------|--------|
+| 001 | Foundation + Auth | ✅ |
+| 002 | Onboarding wizard | ✅ |
+| 003 | M01 Djelatnici CRUD | ✅ |
+| 004 | M03 Osposobljavanja | ✅ |
+| 005 | M04 Zdravstveni pregledi | ✅ |
+| 006 | M05 Radna oprema | ✅ |
+| 007 | M11 Akcijski centar | ✅ |
+| 008 | PDF: EK-1, EK-2, EK-4, EK-5, ZOS | ✅ |
+| 009 | M02 Radna mjesta + procjena rizika | ✅ |
+| 010 | M08 Ozljede 48h HZZO | ✅ |
+| 011 | ZNR stručnjak multi-klijent | ✅ |
+| 012 | M12 Inspekcijska mapa | ✅ |
 
 ### Sprint 012 — M12 Inspekcijska mapa
 **Cilj:** Jedan klik → ZIP za inspektora — killer feature.

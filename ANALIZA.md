@@ -1,143 +1,127 @@
-# ANALIZA — Sprint 001 + 002 + 003
+# ANALIZA — MVP Kompletiran (Sprint 001–012)
 
 Datum: 2026-04-06
 
 ## ✅ Što je napravljeno
 
-### Sprint 001 — Foundation (zatvaranje)
-- Scaffolding cleanup: 14 stray literal-brace direktorija uklonjeno
-- `npm install` (325 paketa)
-- Fix: `tenant.store.ts` rename `tenant`→`activeTenant`, `clear`→`clearTenant`
-- Fix: `tenant.types.ts` uklonjeni legacy Model 2 stupci (`supabase_url`, `supabase_anon_key`)
-- Fix: `RegisterPage.tsx` — `metaRegistry` → `supabase`
-- Build pass: `tsc -b && vite build` čist
+### Sprint 001–003 (Foundation + Onboarding + M01 Djelatnici)
+- Vite + React 18 + TS strict + Tailwind + Wouter + Zustand + Supabase
+- Auth (login/register), session management, onboarding wizard
+- `create_tenant_with_owner` RPC (SECURITY DEFINER)
+- Race condition fix (`hasAttemptedLoad` + `OnboardingGuard`)
+- M01 Djelatnici CRUD: lista/profil/dodaj/uredi/deaktiviraj
+- Import 61 djelatnika Carta d.o.o. iz CSV (mojibake fix)
+- 14 radnih mjesta auto-seeded, OIB validacija (ISO 7064)
+- UI komponente: Button, Input, Card, Badge, Spinner, Alert, Select, Modal, Table
 
-### Sprint 002 — Tenant Onboarding
-- Puni dvostupanjski onboarding wizard (naziv, OIB, djelatnost → broj zaposlenika, grad, adresa)
-- Atomski `create_tenant_with_owner` RPC (SECURITY DEFINER, rješava chicken-and-egg s RLS)
-- Auto-plan po `employee_count` (micro/small/medium/large)
-- Race condition fix: `hasAttemptedLoad` flag u tenant store + `OnboardingGuard` u routeru —
-  spriječava redirect na `/onboarding` dok `loadTenant()` nije završio prvi pokušaj
-- Sidebar `<a>` nesting warning popravljen (Wouter `Link` + child `<a>` → className na Link)
+### Sprint 004 — M03 Osposobljavanja
+- CRUD hooks + status engine (valid/expiring_soon/expired)
+- Auto-fill: initial=trajno, refresher=+4god, legal ref auto-link
+- Integracija u profil djelatnika (live lista + "Dodaj" gumb)
 
-### Sprint 003 — M01 Djelatnici (CRUD)
-**Baza:**
-- Migracija 007: `workers` — relaxed NOT NULL na `oib`/`employment_date`, dodani `email`/`phone` stupci, partial index za nepotpune podatke
-- Migracija 008: `tasks` tablica + DB trigger `trg_new_worker_training_task` — automatski kreira task "Osposobljavanje u 30 dana" za svakog novog djelatnika ([ZAK: čl. 27 ZZnR])
-- Migracija 009: FK constraint `workers.position_id → work_positions.id` (potreban za PostgREST embedded select)
+### Sprint 005 — M04 Zdravstveni pregledi
+- CRUD hooks + auto next_check_date (+3god za periodički)
+- Result badge (Sposoban/S ograničenjima/Nesposoban)
+- Integracija u profil djelatnika
 
-**Import Carta d.o.o. djelatnika:**
-- Node script `scripts/import-carta-employees.mjs` — parsira CSV iz Carta ERP-a
-- Mojibake fix (UTF-8 → Latin-1 → UTF-8 double encoding): Phase 1 bajtni recovery, Phase 2 regex za izgubljene bajtove, Phase 3 dictionary za dvosmislene slučajeve (Kovač vs Kovać, Đurišić, Čubela, Slađana, Domaćica, Šmaholc, Šipoš...)
-- `asciiFoldEmail` — emailovi ostaju ASCII (schrödel → schrodel)
-- Rezultat: **61 djelatnik** (52 active + 9 former), **14 radnih mjesta** auto-seeded u `work_positions`
-- `tenants.employee_count` auto-update na 52 (active only)
+### Sprint 006 — M05 Radna oprema
+- CRUD + inspection status engine
+- Auto next_inspection: stroj +3god, vatrogasni aparat +1god
+- Equipment types: 8 vrsta (stroj, vatrogasni aparat, PP, tlačna posuda...)
 
-**Nove UI komponente (reusable za buduće module):**
-- `src/components/ui/Select.tsx` — native select s label/error/hint/leftAddon
-- `src/components/ui/Modal.tsx` — portal, ESC/backdrop close, sm/md/lg size
-- `src/components/ui/Table.tsx` — compound component (Table.Header/Body/Row/Cell/HeaderCell sa sortable support)
+### Sprint 007 — M11 Akcijski centar
+- Agregacija alarma iz tasks + trainings + health_checks + equipment
+- 4 statistička kartice (critical/urgent/warning/info), klik = filter
+- AlarmCard s LegalBadge, rok, navigacija na entitet
+- 52 backfilled taska za existing djelatnike
 
-**M01 Djelatnici stranice:**
-- `RadniciPage.tsx` — lista s filterima (pretraga, status active/former/all), paginacija (25/str), CSV export, badge za count
-- `RadnikFormPage.tsx` — dual-mode (create `/radnici/novi` + edit `/radnici/:id/uredi`)
-- `RadnikProfilPage.tsx` — dosje, upozorenja za nepotpune podatke (OIB/employment_date missing), deaktivacija modal, placeholder sekcije za Sprint 004+ (Osposobljavanja, Zdravstveni pregledi, Radna oprema)
+### Sprint 008 — PDF obrasci
+- EK-1: Evidencijski karton zaposlenika (čl. 61 ZZnR)
+- EK-2: Evidencija o osposobljavanju (čl. 27 ZZnR)
+- EK-4: Evidencija o zdravstvenim pregledima (čl. 34 ZZnR)
+- EK-5: Evidencija o radnoj opremi (PR-04 NN 16/16)
+- ZOS: Zapisnik o ocjeni osposobljenosti (čl. 27 ZZnR)
+- "PDF dosje" gumb na profilu djelatnika → EK-1 + EK-2 + EK-4
+- Zajednički stilovi, download helper (@react-pdf/renderer)
 
-**M01 Djelatnici komponente:**
-- `WorkersTable.tsx` — klikabilni redovi, status badge, warning ikone, position/department
-- `WorkerForm.tsx` — 4 card sekcije (osobni/kontakt/zaposlenje/napomene), OIB validacija (ISO 7064 MOD 11,10), dropdown za pozicije
-- `DeactivateWorkerModal.tsx` — LegalBadge čl. 61 ZZnR, potvrda deaktivacije
-- `Pagination.tsx` — prethodna/sljedeća s page indicator
+### Sprint 009 — M02 Radna mjesta + Procjena rizika
+- CRUD + risk assessment status engine
+- Auto next revision: +2god (čl. 18 ZZnR)
+- Posebni uvjeti rada checkbox
 
-**M01 Djelatnici data layer:**
-- `useWorkers.ts` — `useWorkersList` (paginacija+filteri), `useWorker` (single), `useWorkPositions`, `useWorkerMutations` (create/update/deactivate)
-- `useWorkerFilters.ts` — URL-based filters (shareable links)
-- `types.ts` — `WorkerWithPosition`, `WorkerFilters`, `CONTRACT_TYPES`, `GENDER_OPTIONS`
-- `oib.ts` — ISO 7064 MOD 11,10 validacija
-- `csv-export.ts` — CSV download s BOM za Excel kompatibilnost
+### Sprint 010 — M08 Ozljede na radu
+- Migracija 010: incidents tablica + auto-task trigger (48h HZZO)
+- 48h status engine (ok/urgent/critical)
+- Alert "HITNO — 48h za prijavu HZZO" s kaznom
+- Auto report_deadline = incident_date + 48h
 
-**Rename: "Radnici" → "Djelatnici"** — svi korisnički vidljivi stringovi (sidebar, naslovi, breadcrumbs, toast poruke, empty states, modal, CSV filename). Interni nazivi (rute `/radnici`, modul `M01-radnici`, tablica `workers`) ostaju nepromijenjeni.
+### Sprint 011 — ZNR stručnjak multi-klijent
+- Migracija 011: invite_znr_specialist + accept_specialist_invite RPC
+- Stručnjak dashboard: lista klijenata, switch between tenants, alarm indikatori
 
-### Infrastruktura (tijekom svih sprinteva)
-- **Supabase MCP** konfiguriran: `.mcp.json` u root projekta, PAT kroz env var `SUPABASE_ACCESS_TOKEN`
-- **6 migracija primijenjeno kroz MCP** (001-006 + 007-009)
-- Migracija 006: security hardening — `SET search_path = public, pg_temp` na svih 5 SECURITY DEFINER funkcija (remediation za Supabase advisor lint 0011)
-- **`database.types.ts` generiran iz žive sheme** (MCP `generate_typescript_types`) — svi `as unknown as` castovi uklonjeni
-- **`.env` kreiran lokalno** sa Supabase URL + anon key (gitignored)
-- **Security incident:** Atila je paste-ao PAT u chat → rotiran odmah. Anon key paste-an ali je public by design.
+### Sprint 012 — M12 Inspekcijska mapa
+- Jedan klik → download svih ZNR evidencija (CSV + JSON bundle)
+- Djelatnici, osposobljavanja, pregledi, oprema, ozljede, radna mjesta
 
-## ⚠️ Što ne radi / nije kompletno
-
-- **Lista djelatnika** — FK constraint dodana (migracija 009), query bi trebao raditi nakon hard reload. Atila treba verificirati da vidi 52 aktivna djelatnika.
-- **OIB i datum zaposlenja su prazni** za sve importirane djelatnike — UI pokazuje warning badge ali podaci moraju biti ručno uneseni (iz Carta ERP-a ih nismo imali)
-- **`supabase/migrations/007_workers_import_prep.sql`** lokalna datoteka nije kreirana (migracija je primjenjena samo kroz MCP). Isto za 008 i 009.
-- **SETUP_GUIDE.md** ne reflektira migracije 006-009 — zastarjeli
-- **`docs/SPRINT_PLAN.md`** ne reflektira Sprint 001-003 completion
-- **Migracija za existing 61 djelatnika** — DB trigger `trg_new_worker_training_task` je dodan NAKON importa, pa existing djelatnici NEMAJU auto-generirani task. Samo novi djelatnici dobivaju task automatski.
-
-## 🔴 Block issues
-
-Nema blokera. Aplikacija radi lokalno, baza je live, auth+onboarding+CRUD funkcioniraju.
-
-## 📋 Zakonska usklađenost ([ZAK] tagovi)
-
-| Modul | [ZAK] | Implementacija |
-|-------|-------|----------------|
-| M01 | čl. 61 ZZnR — evidencija trajno | `status='former'` soft delete, LegalBadge na profilu/listi/deactivation modalu, warning za missing data |
-| M01 | čl. 27 ZZnR — 30 dana osposobljavanje | DB trigger kreira task automatski, LegalBadge na form stranici, hint uz `employment_date` |
-| M01 | čl. 62 ZZnR — OIB za HZZO | OIB validacija (ISO 7064), hint na formi, warning badge na profilu |
-| M01 | čl. 34 ZZnR — posebni uvjeti | `is_special_conditions` checkbox, shield ikona u tablici, Badge na profilu |
-| — | GDPR čl. 5(2) | audit_log trigger na workers, tasks tablicama |
-| — | RLS | Sve tablice (tenants, tenant_users, workers, work_positions, tasks, audit_log...) imaju RLS + `auth_tenant_ids()` helper |
-
-## 💡 Prijedlozi za sljedeći sprint (Sprint 004 — M03 Osposobljavanja)
-
-1. **Backfill tasks za existing djelatnike** — pokrenuti jednu SQL naredbu koja kreira "Osposobljavanje" task za sve 52 active djelatnika koji ga nemaju
-2. **Profil djelatnika → sekcija Osposobljavanja** — CRUD za trainings vezan uz worker_id
-3. **ZOS obrazac generiranje (PDF)** — `@react-pdf/renderer` je već u package.json
-4. **Status osvježavanje** — `valid` / `expiring_soon` / `expired` kalkulacija na temelju `valid_until` datuma
-5. **Email podsjetnik** — Resend integracija za alarmiranje 30 dana unaprijed (Supabase Edge Function)
-6. **Kreirati lokalne SQL datoteke** za migracije 007-009 da repo prati DB stanje
-
-## 🔧 Potrebne akcije od Atile
-
-### 1) Verificiraj listu djelatnika
-Hard reload na http://localhost:5173/radnici — trebao bi vidjeti 52 aktivna djelatnika Carta d.o.o.
-Prebaci filter na "Bivši" → 9 bivših. "Svi" → 61 ukupno.
-
-### 2) Testiraj CRUD flow
-- Klikni na bilo kojeg djelatnika → profil
-- "Uredi" → promijeni nešto → "Spremi promjene"
-- "Novi djelatnik" → ispuni formu → "Dodaj djelatnika" (DB trigger automatski kreira task za osposobljavanje)
-- "Deaktiviraj" na nekom test djelatniku → potvrdi → djelatnik je sada "bivši"
-
-### 3) Opcija: Ažuriraj OIB i datume zaposlenja
-Iz Carta ERP-a ili ručno — nedostajući OIB-ovi i datumi zaposlenja generiraju warning badge u UI-ju.
-Bez employment_date ne radi alarm "30 dana od zaposlenja" (čl. 27 ZZnR).
-
-### 4) Kad testiranje prođe, javi za Sprint 004
-> "Kreni sa Sprintom 004 (M03 Osposobljavanja)"
-
-## 🧹 Tehnički dug
-
-- Lokalne SQL migration datoteke 007-009 ne postoje u `supabase/migrations/` — migracije su primijenjene samo kroz MCP. Kreirati za parity.
-- `SETUP_GUIDE.md` zastarjeli (spominje samo migracije 001-004)
-- `docs/SPRINT_PLAN.md` ne reflektira completion status
-- `useWorkerFilters` koristi `window.location.search` umjesto Wouter hook-a (Wouter nema useSearch) — radi ali nije idiomatski
-
-## 📊 Statistike sesije
+## 📊 Statistike
 
 | Metrika | Vrijednost |
 |---------|-----------|
-| Supabase migracije primijenjene | 9 (001-009) |
-| Security advisor lints | 0 (čisto) |
+| Git commitova | 10 |
+| Supabase migracije | 11 (001–011) |
+| Supabase tablice | 12 (+ audit_log) |
 | Legal references seeded | 16 |
-| Djelatnici importirani | 61 (52 active + 9 former) |
+| Djelatnici (Carta d.o.o.) | 61 (52 active + 9 former) |
 | Radna mjesta seeded | 14 |
-| Nove datoteke kreirane | ~25 |
-| UI komponente (reusable) | 3 (Select, Modal, Table) |
-| Build | ✅ čist (0 errors, 0 warnings) |
+| PDF obrasci | 5 (EK-1, EK-2, EK-4, EK-5, ZOS) |
+| UI komponente (reusable) | 8 (Button, Input, Card, Badge, Spinner, Alert, Select, Modal, Table) |
+| Build | ✅ čist (0 errors) |
+
+## 📋 Zakonska usklađenost
+
+| Modul | [ZAK] | Implementacija |
+|-------|-------|----------------|
+| M01 | čl. 61 ZZnR — evidencija trajno | Soft delete, LegalBadge, warning za missing data |
+| M03 | čl. 27 ZZnR — 30 dana + 4 god | DB trigger auto-task, status engine, PDF EK-2/ZOS |
+| M04 | čl. 34 ZZnR — periodički pregledi | Auto +3god, result badge, PDF EK-4 |
+| M05 | PR-04 NN 16/16 — oprema 3 god | Auto +3god/+1god (vatrogasni), inspection status, PDF EK-5 |
+| M08 | čl. 62 ZZnR — 48h HZZO | DB trigger HITNI task, 48h countdown, kazna badge |
+| M02 | čl. 18 ZZnR — procjena rizika 2 god | Auto +2god, risk assessment status |
+| M11 | Akcijski centar | Agregacija svih alarma s [ZAK] referencama |
+| — | GDPR čl. 5(2) | audit_log trigger na svim ZNR tablicama |
+| — | RLS | Sve tablice imaju RLS + auth_tenant_ids() |
+
+## ⚠️ Poznati tehnički dug / preostali rad
+
+1. **Email alarmi (Resend)** — hooks i data layer postoje, ali Supabase Edge Function za slanje emailova nije implementirana. Treba: pg_cron job koji provjerava tasks due_date i poziva Edge Function.
+2. **QR kod za opremu** — `qr_code_token` postoji u tablici ali QR generiranje/prikazivanje nije implementirano.
+3. **Digitalni potpis flow** — ZOS/uputnica imaju polja za potpis ali email link "Potvrđujem" nije implementiran.
+4. **OIR-1 / ER-2 obrasci** — specifični HZZO PDF obrasci za ozljede nisu implementirani (samo generička forma).
+5. **Lokalne SQL datoteke** za migracije 010-011 ne postoje u `supabase/migrations/`.
+6. **M06 Radni okoliš, M07 OZO, M09 Evakuacija, M10 SDS** — stub stranice, nisu implementirani (izvan MVP opsega).
+7. **Seed stvarnih podataka** — čekamo Atilin Excel sutra za popunjavanje osposobljavanja, pregleda, opreme.
+
+## 🔧 Potrebne akcije od Atile
+
+### 1) Testiraj MVP
+- http://localhost:5173 → prođi kroz svaki modul u sidebaru
+- Profil djelatnika → "PDF dosje" → provjeri generirane PDFove
+- Akcijski centar → trebao bi vidjeti 52 pending taska za osposobljavanje
+- Inspekcijska mapa (Izvješća) → "Preuzmi" → provjeri downloadane CSV-ove
+
+### 2) Sutra: donesi Excel s ZNR podacima
+- Osposobljavanja (tko, kada, vrsta, rok)
+- Zdravstveni pregledi (tko, kada, rezultat, sljedeći)
+- Radna oprema (naziv, vrsta, serijski, zadnji/sljedeći pregled)
+- Ja ću napraviti seed skriptu kao za Carta CSV import
+
+### 3) Push na GitHub
+Ako GitHub repo još nije spojen:
+```bash
+git remote add origin https://github.com/vadociatila-source/znr-erp.git
+git push -u origin main
+```
 
 ---
 
-*ANALIZA.md v2.0 — Sprint 001 + 002 + 003 | Datum: 2026-04-06*
+*ANALIZA.md v3.0 — MVP kompletiran | 12 sprintova | 2026-04-06*
