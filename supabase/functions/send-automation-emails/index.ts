@@ -14,8 +14,8 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
-// FROM adresa — dok nema verificirane domene koristi Resend test
-const FROM_EMAIL = "ZNR ERP <onboarding@resend.dev>"
+// FROM adresa — verificirana domena znr-erp.com
+const FROM_EMAIL = "ZNR ERP <noreply@znr-erp.com>"
 
 interface EmailPayload {
   from: string
