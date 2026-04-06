@@ -13,6 +13,8 @@ import { DeactivateWorkerModal } from '../components/DeactivateWorkerModal'
 import { useWorker, useWorkerMutations } from '../hooks/useWorkers'
 import { useWorkerTrainings } from '@/modules/M03-osposobljavanja/hooks/useTrainings'
 import { TrainingsTable } from '@/modules/M03-osposobljavanja/components/TrainingsTable'
+import { useWorkerHealthChecks } from '@/modules/M04-zdravstveni-pregledi/hooks/useHealthChecks'
+import { HealthChecksTable } from '@/modules/M04-zdravstveni-pregledi/components/HealthChecksTable'
 import toast from 'react-hot-toast'
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
@@ -30,6 +32,7 @@ export default function RadnikProfilPage() {
   const workerId = params?.id
   const { worker, isLoading, error } = useWorker(workerId)
   const { trainings: workerTrainings, isLoading: loadingTrainings } = useWorkerTrainings(workerId)
+  const { checks: workerChecks, isLoading: loadingChecks } = useWorkerHealthChecks(workerId)
   const { deactivateWorker, isSubmitting } = useWorkerMutations()
   const [showDeactivate, setShowDeactivate] = useState(false)
 
@@ -181,12 +184,27 @@ export default function RadnikProfilPage() {
             )}
           </Card>
 
-          <Card padding="md" className="opacity-60">
-            <div className="flex items-center gap-2 mb-2">
-              <Heart size={16} className="text-red-500" />
-              <h4 className="text-sm font-semibold text-slate-700">Zdravstveni pregledi</h4>
+          <Card padding="md">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Heart size={16} className="text-red-500" />
+                <h4 className="text-sm font-semibold text-slate-700">Zdravstveni pregledi</h4>
+              </div>
+              {worker.status === 'active' && (
+                <Link href={`/radnici/${worker.id}/pregledi/novo`}>
+                  <Button variant="ghost" size="sm" leftIcon={<Plus size={14} />}>
+                    Dodaj
+                  </Button>
+                </Link>
+              )}
             </div>
-            <p className="text-xs text-slate-500">Sprint 005 — čl. 34 ZZnR</p>
+            {loadingChecks ? (
+              <p className="text-xs text-slate-400">Učitavanje...</p>
+            ) : workerChecks.length > 0 ? (
+              <HealthChecksTable checks={workerChecks} isLoading={false} showWorkerName={false} />
+            ) : (
+              <p className="text-xs text-slate-500">Nema pregleda — čl. 34 ZZnR</p>
+            )}
           </Card>
 
           <Card padding="md" className="opacity-60">
