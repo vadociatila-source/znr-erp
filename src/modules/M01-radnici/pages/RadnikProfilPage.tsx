@@ -4,17 +4,20 @@
 
 import { useState } from 'react'
 import { Link, useLocation, useRoute } from 'wouter'
-import { Edit2, UserX, AlertTriangle, BookOpen, Heart, Wrench, Plus } from 'lucide-react'
+import { Edit2, UserX, AlertTriangle, BookOpen, Heart, Wrench, Plus, FileText } from 'lucide-react'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { Button } from '@/components/ui/Button'
 import { Card, Badge, Alert, Spinner } from '@/components/ui/index'
 import { LegalBadge } from '@/components/legal/LegalBadge'
 import { DeactivateWorkerModal } from '../components/DeactivateWorkerModal'
 import { useWorker, useWorkerMutations } from '../hooks/useWorkers'
+import { useTenantStore } from '@/store/tenant.store'
 import { useWorkerTrainings } from '@/modules/M03-osposobljavanja/hooks/useTrainings'
 import { TrainingsTable } from '@/modules/M03-osposobljavanja/components/TrainingsTable'
 import { useWorkerHealthChecks } from '@/modules/M04-zdravstveni-pregledi/hooks/useHealthChecks'
 import { HealthChecksTable } from '@/modules/M04-zdravstveni-pregledi/components/HealthChecksTable'
+import { createElement } from 'react'
+import { EK1Dokument, EK2Dokument, EK4Dokument, downloadPdf } from '@/modules/M12-izvjesca/pdf'
 import toast from 'react-hot-toast'
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
@@ -35,6 +38,7 @@ export default function RadnikProfilPage() {
   const { checks: workerChecks, isLoading: loadingChecks } = useWorkerHealthChecks(workerId)
   const { deactivateWorker, isSubmitting } = useWorkerMutations()
   const [showDeactivate, setShowDeactivate] = useState(false)
+  const tenantName = useTenantStore(s => s.activeTenant?.name ?? 'ZNR ERP')
 
   if (isLoading) {
     return (
@@ -68,6 +72,32 @@ export default function RadnikProfilPage() {
       ]}
       actions={
         <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            leftIcon={<FileText size={14} />}
+            onClick={async () => {
+              await downloadPdf(
+                createElement(EK1Dokument, { worker, tenantName }),
+                `EK1_${worker.last_name}_${worker.first_name}.pdf`
+              )
+              if (workerTrainings.length > 0) {
+                await downloadPdf(
+                  createElement(EK2Dokument, { workerName: fullName, trainings: workerTrainings, tenantName }),
+                  `EK2_${worker.last_name}_${worker.first_name}.pdf`
+                )
+              }
+              if (workerChecks.length > 0) {
+                await downloadPdf(
+                  createElement(EK4Dokument, { workerName: fullName, checks: workerChecks, tenantName }),
+                  `EK4_${worker.last_name}_${worker.first_name}.pdf`
+                )
+              }
+              toast.success('PDF-ovi generirani')
+            }}
+          >
+            PDF dosje
+          </Button>
           <LegalBadge article="čl. 61 ZZnR" deadline="evidencija trajno" />
           {worker.status === 'active' && (
             <>
