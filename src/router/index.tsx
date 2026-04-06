@@ -28,6 +28,11 @@ const OsposobljavanjaPage = lazy(() => import('@/modules/M03-osposobljavanja/pag
 const ZdravstveniPreglediPage = lazy(() => import('@/modules/M04-zdravstveni-pregledi/pages/ZdravstveniPreglediPage'))
 const RadnaOpremaPage = lazy(() => import('@/modules/M05-radna-oprema/pages/RadnaOpremaPage'))
 const AkcijskiCentarPage = lazy(() => import('@/modules/M11-akcijski-centar/pages/AkcijskiCentarPage'))
+const RadniOkolisPage    = lazy(() => import('@/modules/M06-radni-okolis/pages/RadniOkolisPage'))
+const OzoPage            = lazy(() => import('@/modules/M07-ozo/pages/OzoPage'))
+const EvakuacijaPage     = lazy(() => import('@/modules/M09-evakuacija/pages/EvakuacijaPage'))
+const SdsPage            = lazy(() => import('@/modules/M10-sds/pages/SdsPage'))
+const IzvjescaPage       = lazy(() => import('@/modules/M12-izvjesca/pages/IzvjescaPage'))
 const SpecijalistDashboardPage = lazy(() => import('@/modules/M11-akcijski-centar/pages/SpecijalistDashboardPage'))
 
 function LoadingFallback() {
@@ -152,6 +157,23 @@ export function AppRouter() {
         {/* ZNR Stručnjak dashboard */}
         <Route path="/strucnjak">
           <ProtectedRoute><SpecijalistDashboardPage /></ProtectedRoute>
+        </Route>
+
+        {/* M06, M07, M09, M10, M12 */}
+        <Route path="/radni-okolis">
+          <TenantRoute><RadniOkolisPage /></TenantRoute>
+        </Route>
+        <Route path="/ozo">
+          <TenantRoute><OzoPage /></TenantRoute>
+        </Route>
+        <Route path="/evakuacija">
+          <TenantRoute><EvakuacijaPage /></TenantRoute>
+        </Route>
+        <Route path="/sds">
+          <TenantRoute><SdsPage /></TenantRoute>
+        </Route>
+        <Route path="/izvjesca">
+          <TenantRoute><IzvjescaPage /></TenantRoute>
         </Route>
 
         {/* M08 Ozljede */}

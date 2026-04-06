@@ -3,7 +3,7 @@
 > **Ovo je tvoja biblija.** Pročitaj cijeli dokument prije svakog zadatka.  
 > Projekt: ZNR ERP — Standalone SaaS za zaštitu na radu (HR tržište)  
 > Developer: Atila Vadoci | GitHub: vadociatila-source | Email: vadociatila@gmail.com  
-> Stack verzija: April 2026
+> Stack verzija: Travanj 2026 | **CLAUDE.md v2.0**
 
 ## 🔑 Ključni podaci projekta
 
@@ -11,18 +11,32 @@
 |--------|-----------|
 | GitHub | github.com/vadociatila-source/znr-erp |
 | Production | https://znr-erp.pages.dev |
-| Supabase | https://nezvlavmduedcaiaumgi.supabase.co (ZNR projekt, vadociatila@gmail.com) |
+| Supabase | https://nezvlavmduedcaiaumgi.supabase.co (vadociatila@gmail.com) |
 | Resend | simpliapp4 account (simpliapp4@gmail.com) — key u GitHub Secrets |
-| Cloudflare | Pages → Connect to Git → vadociatila-source/znr-erp |
+| Cloudflare | Pages → znr-erp.pages.dev → Connect to Git |
 
-## ⚠️ Arhitekturna napomena
+## 📊 Status projekta (2026-04-06)
 
-**ZNR ERP je standalone SaaS produkt** — nije vezan za Cartu.  
-ZNR ERP je standalone SaaS — nema hardkodiranog klijenta u kodu.  
-Carta ERP = potpuno odvojen projekt s vlastitom bazom. Integracija je opcionalna budućnost, ne hard requirement.  
-Claude Code piše generičan multi-tenant kod — bez hardkodiranja ikojeg klijenta.  
-**UI terminologija:** korisnik vidi "Djelatnici" (ne "Radnici"). Interni nazivi (rute, modul, tablica) ostaju nepromijenjeni.  
-**Pilot tenant:** Carta d.o.o. (Osijek, prerađivačka industrija, 52 active + 9 former djelatnika).
+> **MVP KOMPLETIRAN — svih 12 sprintova dovršeno.**  
+> Pilot tenant: **Carta d.o.o.** (Osijek, prerađivačka industrija)  
+> 52 aktivna + 9 bivša djelatnika importirana iz CSV-a.
+
+**Tehnički dug (preostalo za Fazu 2):**
+- Email alarmi (Resend) — Edge Function nije implementirana, pg_cron pending
+- QR kod za opremu — `qr_code_token` postoji u tablici, UI nije implementiran
+- Digitalni potpis flow — polja postoje, email link "Potvrđujem" nije implementiran
+- OIR-1 / ER-2 PDF obrasci — HZZO specifični obrasci za ozljede
+- Lokalni SQL fileovi za migracije 010-011 ne postoje u `supabase/migrations/`
+- M06 Radni okoliš, M07 OZO, M09 Evakuacija, M10 SDS — stub stranice
+
+## ⚠️ Arhitekturne napomene
+
+**ZNR ERP je standalone SaaS produkt** — generičan multi-tenant kod, bez hardkodiranog klijenta.  
+**Carta ERP** = potpuno odvojen projekt s vlastitom bazom. ZNR će biti modul u Carta ERP.  
+**Carta d.o.o.** = pilot tenant u ZNR ERP SaaS-u (plaća pretplatu kao svaki drugi klijent).  
+**UI terminologija:** korisnik vidi **"Djelatnici"** (ne "Radnici"). Interni nazivi (rute, moduli, tablice) mogu ostati `workers`.
+
+---
 
 ## 0. MISIJA PROJEKTA
 
@@ -52,14 +66,15 @@ Rokovi nisu "best practice" — to su kazne 5.000–50.000 EUR.
 
 ### PRAVILO #3 — LEGAL_REFERENCES TABLICA
 Svaki zakonski rok mora biti u `legal_references` tablici u Supabase.
-**NIKAD** ne hard-kodiraj rokove u aplikacijski kod. Uvijek referencirati tablicu.
-Razlog: kad se zakon promijeni → samo `UPDATE` u tablici, bez deploya.
+**NIKAD** ne hard-kodiraj rokove u aplikacijski kod.
+Razlog: kad se zakon promijeni → samo `UPDATE` u tablici, bez deplooya.
 
 ### PRAVILO #4 — ZAK TAG U KODU
 ```typescript
 // [ZAK: čl.27 ZZnR NN71/14] Osposobljavanje u roku 30 dana od zaposlenja
-// [ZAK: PR-04 NN16/16] Pregled radne opreme max. svake 3 godine  
+// [ZAK: PR-04 NN16/16] Pregled radne opreme max. svake 3 godine
 // [ZAK: GDPR čl.5(2)] Audit log — accountability princip
+// [ZAK: čl.62 ZZnR] Prijava ozljede HZZO u roku 48 sati
 ```
 
 ### PRAVILO #5 — KORISNIK VIDI ZAKON
@@ -73,15 +88,19 @@ Svaka tablica koja sadrži osobne/ZNR podatke ima trigger za `audit_log`.
 Nije opcija — to je **GDPR čl. 5(2) obveza**.
 
 ### PRAVILO #7 — RLS NA SVEMU
-Svaka tablica u tenant Supabase projektu ima Row Level Security (RLS).
+Svaka tablica ima Row Level Security (RLS).
 Nikad ne ostavljaj tablicu bez RLS politike.
 
 ### PRAVILO #8 — TYPESCRIPT STRICT
 ```typescript
 // tsconfig: "strict": true — UVIJEK
-// Nikad: any (osim u edge casevima s komentarom)
+// Nikad: any (osim u edge casevima s komentarom zašto)
 // Uvijek: explicit return types na funkcijama
 ```
+
+### PRAVILO #9 — UI TERMINOLOGIJA
+Korisnik uvijek vidi **"Djelatnici"** u sučelju.  
+Interni kod, rute i SQL tablice mogu koristiti `workers`.
 
 ---
 
@@ -92,21 +111,20 @@ Frontend:
   React 18.3+          Komponente, hooks
   TypeScript 5.4+      Strict mode, no-any
   Vite 5.2+            Build tool, dev server
-  Wouter 3.x           Router (lagani, bez React Router bloataa)
+  Wouter 3.x           Router (lightweight)
   Zustand 4.x          State management (store per domain)
   Tailwind CSS 3.4+    Styling (utility-first)
 
 Backend:
   Supabase             PostgreSQL, Auth, Storage, Realtime
-  pg_cron              Scheduled alarm jobs
+  pg_cron              Scheduled alarm jobs (PENDING — Faza 2)
   Supabase RLS         Row Level Security na svakoj tablici
 
 Email:
-  Resend               Transakcijski emailovi (alarmi, pozivnice)
+  Resend               Transakcijski emailovi — Edge Function PENDING
 
 PDF:
-  @react-pdf/renderer  Generiranje PDF dokumenata (klijentska strana)
-  jsPDF (fallback)     Za jednostavnije dokumente
+  @react-pdf/renderer  Generiranje PDF dokumenata (client-side)
 
 Deployment:
   Cloudflare Pages     Frontend hosting
@@ -123,26 +141,32 @@ Node: 20+ (LTS)
 ### Model 1: jedna baza, RLS izolacija
 
 ```
-JEDAN Supabase projekt (novi, odvojeni account)
+JEDAN Supabase projekt
 └── Jedna PostgreSQL baza
-    ├── tenants              ← sve registrirane tvrtke
-    ├── tenant_users         ← tko ima pristup čemu
-    ├── znr_specialist_clients ← ZNR stručnjak → N klijenata
-    ├── workers              ← svi radnici, filtrirani RLS-om
-    ├── trainings            ← sva osposobljavanja, filtrirani RLS-om
-    ├── health_checks        ← svi pregledi, filtrirani RLS-om
-    ├── equipment            ← sva oprema, filtrirani RLS-om
-    ├── legal_references     ← globalno (ZZnR vrijedi za sve u HR)
-    └── audit_log            ← GDPR, filtrirano po tenant_id
+    ├── tenants                  ← sve registrirane tvrtke
+    ├── tenant_users             ← tko ima pristup čemu (uloge)
+    ├── znr_specialist_clients   ← ZNR stručnjak → N klijenata
+    ├── workers                  ← svi djelatnici [tenant_id + RLS]
+    ├── trainings                ← sva osposobljavanja [tenant_id + RLS]
+    ├── health_checks            ← svi pregledi [tenant_id + RLS]
+    ├── equipment                ← sva oprema [tenant_id + RLS]
+    ├── incidents                ← ozljede na radu [tenant_id + RLS]
+    ├── work_positions           ← radna mjesta [tenant_id + RLS]
+    ├── tasks                    ← alarm taskovi [tenant_id + RLS]
+    ├── legal_references         ← globalno (ZZnR vrijedi za sve u HR)
+    └── audit_log                ← GDPR [tenant_id + RLS]
 ```
 
-**RLS (Row Level Security)** — svaka tablica ima politiku:
+**RLS — helper funkcija:**
 ```sql
--- Primjer: user vidi samo radnike svoje tvrtke
+CREATE OR REPLACE FUNCTION auth_tenant_ids()
+RETURNS SETOF UUID LANGUAGE sql STABLE SECURITY DEFINER AS $$
+  SELECT tenant_id FROM tenant_users WHERE user_id = auth.uid()
+$$;
+
+-- Primjer RLS politike:
 CREATE POLICY "workers_read" ON workers
   FOR SELECT USING (tenant_id IN (SELECT auth_tenant_ids()));
--- auth_tenant_ids() = helper funkcija koja vraća tenant_id-ove
--- kojima je autenticirani user član
 ```
 
 ### Implementacija u kodu
@@ -154,32 +178,19 @@ export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY
 )
-// Nema factory funkcija. Nema dinamičkih klijenata.
 // RLS automatski filtrira podatke po tenantu.
-
-// Svaki upit automatski vidi samo podatke svog tenanta:
-const { data } = await supabase
-  .from('workers')
-  .select('*')
-  // .eq('tenant_id', ...) — NIJE POTREBNO! RLS to radi automatski.
+// .eq('tenant_id', ...) NIJE POTREBNO u upitima.
 ```
 
 ### Uloge korisnika
 
 ```typescript
-type UserRole = 
+type UserRole =
   | 'owner'           // vlasnik/direktor — puna prava
   | 'hr'              // HR osoba — gotovo puna prava
   | 'znr_specialist'  // interni ZNR stručnjak — puna prava
-  | 'delegate'        // povjerenik radnika — read-only za ZNR
+  | 'delegate'        // povjerenik radnika — read-only ZNR
   | 'worker'          // radnik — read-only vlastiti dosje
-
-// Posebno:
-type ExternalSpecialist = {
-  // ZNR stručnjak koji vodi VIŠE klijenata
-  // Nema radni odnos s klijentom
-  // Pristupa kroz znr_specialist_clients tablicu u zajedničkoj bazi
-}
 ```
 
 ---
@@ -188,12 +199,15 @@ type ExternalSpecialist = {
 
 ```
 znr-erp/
-├── CLAUDE.md                    ← OVO ČITAŠ
+├── CLAUDE.md                        ← OVO ČITAŠ
+├── ANALIZA.md                       ← feedback od zadnjeg sprinta
 ├── README.md
+├── SETUP_GUIDE.md
 ├── package.json
 ├── vite.config.ts
-├── tsconfig.json
+├── tsconfig.json / tsconfig.app.json / tsconfig.node.json
 ├── tailwind.config.ts
+├── postcss.config.js
 ├── .env.example
 ├── .gitignore
 ├── index.html
@@ -201,29 +215,29 @@ znr-erp/
 ├── src/
 │   ├── main.tsx
 │   ├── App.tsx
+│   ├── index.css
 │   ├── vite-env.d.ts
 │   │
 │   ├── lib/
-│   │   ├── supabase.ts           # Meta-registry Supabase client
-│   │   ├── supabase.ts           # Jedan client za cijelu aplikaciju
-│   │   └── legal-references.ts  # [ZAK] Legal references loader
+│   │   ├── supabase.ts              # Jedan Supabase client (Model 1)
+│   │   └── legal-references.ts      # [ZAK] Legal references loader + cache
 │   │
 │   ├── store/
-│   │   ├── auth.store.ts         # User, session
-│   │   ├── tenant.store.ts       # Active tenant, tenant client
-│   │   └── legal.store.ts        # Loaded legal_references
+│   │   ├── auth.store.ts            # User, session
+│   │   ├── tenant.store.ts          # Aktivni tenant, uloga
+│   │   └── legal.store.ts           # Loaded legal_references
 │   │
 │   ├── router/
-│   │   └── index.tsx             # Wouter routes
+│   │   └── index.tsx                # Wouter routes
 │   │
 │   ├── hooks/
 │   │   ├── useAuth.ts
 │   │   ├── useTenant.ts
-│   │   ├── useLegalRef.ts        # Hook za dohvat zakonskih referenci
-│   │   └── useAlarms.ts          # Hook za alarm engine
+│   │   ├── useLegalRef.ts           # Hook za zakonske reference
+│   │   └── useAlarms.ts             # Hook za alarm engine
 │   │
 │   ├── components/
-│   │   ├── ui/                   # Design system
+│   │   ├── ui/                      # Design system
 │   │   │   ├── Button.tsx
 │   │   │   ├── Card.tsx
 │   │   │   ├── Badge.tsx
@@ -234,24 +248,24 @@ znr-erp/
 │   │   │   ├── Alert.tsx
 │   │   │   └── Spinner.tsx
 │   │   ├── layout/
-│   │   │   ├── AppLayout.tsx     # Glavni layout s Sidebarom
-│   │   │   ├── Sidebar.tsx       # Navigacija po modulima
-│   │   │   └── Header.tsx        # Top bar s alarmima
+│   │   │   ├── AppLayout.tsx        # Glavni layout sa Sidebarom
+│   │   │   ├── Sidebar.tsx          # Navigacija — "Djelatnici" u UI
+│   │   │   └── Header.tsx
 │   │   └── legal/
-│   │       ├── LegalBadge.tsx    # "čl. 27 ZZnR" badge
-│   │       └── LegalTooltip.tsx  # Hover → zakonski okvir
+│   │       ├── LegalBadge.tsx       # "čl. 27 ZZnR" badge
+│   │       └── LegalTooltip.tsx     # Hover → zakonski okvir
 │   │
-│   ├── modules/                  # ZNR moduli
-│   │   ├── M01-radnici/
+│   ├── modules/                     # ZNR moduli
+│   │   ├── M01-radnici/             # UI: "Djelatnici"
 │   │   ├── M02-radna-mjesta/
 │   │   ├── M03-osposobljavanja/
 │   │   ├── M04-zdravstveni-pregledi/
 │   │   ├── M05-radna-oprema/
-│   │   ├── M06-radni-okolis/
-│   │   ├── M07-ozo/
+│   │   ├── M06-radni-okolis/        # STUB — Faza 2
+│   │   ├── M07-ozo/                 # STUB — Faza 2
 │   │   ├── M08-ozljede/
-│   │   ├── M09-evakuacija/
-│   │   ├── M10-sds/
+│   │   ├── M09-evakuacija/          # STUB — Faza 2
+│   │   ├── M10-sds/                 # STUB — Faza 2
 │   │   ├── M11-akcijski-centar/
 │   │   └── M12-izvjesca/
 │   │
@@ -265,189 +279,198 @@ znr-erp/
 │   │       └── DashboardPage.tsx
 │   │
 │   └── types/
-│       ├── database.types.ts     # Supabase generated (ažuriraj nakon migracija)
-│       ├── legal.types.ts        # LegalReference, AlarmLevel tipovi
-│       └── tenant.types.ts       # Tenant, UserRole, TenantUser tipovi
+│       ├── database.types.ts        # Supabase generated types
+│       ├── legal.types.ts           # LegalReference, AlarmLevel
+│       └── tenant.types.ts          # Tenant, UserRole, TenantUser
 │
 ├── supabase/
-│   
-│   │   └── migrations/
-│   │       └── 001_initial.sql   # Tenants, users, specialists
-│   └── tenant/
-│       └── migrations/
-│           ├── 001_legal_references.sql  # [ZAK] Seed data
-│           ├── 002_workers.sql
-│           ├── 003_workplaces.sql
-│           ├── 004_trainings.sql
-│           ├── 005_health_checks.sql
-│           └── 006_equipment.sql
+│   └── migrations/                  # Sve migracije u jednom folderu
+│       ├── 001_schema.sql
+│       ├── 002_rls_policies.sql
+│       ├── 003_legal_seed.sql
+│       ├── 004_audit_triggers.sql
+│       ├── 005–009_...              # Moduli i features
+│       ├── 010_incidents.sql        # M08 Ozljede (lokalni file pending)
+│       └── 011_znr_specialist.sql   # Multi-klijent (lokalni file pending)
 │
-└── docs/
-    ├── SPRINT_PLAN.md
-    ├── ARCHITECTURE.md
-    └── LEGAL_FRAMEWORK.md
+├── docs/
+│   ├── SPRINT_PLAN.md
+│   ├── ARCHITECTURE.md
+│   ├── ZNR_ERP_PROJEKTNA_DOKUMENTACIJA.md
+│   ├── ZNR_PRAVNI_OKVIR.md
+│   └── ZNR_KONKURENCIJA_FEATURES.md
+│
+└── .github/
+    └── workflows/
+        └── deploy.yml
 ```
 
 ---
 
 ## 5. SPRINT PLAN — STATUS
 
-> **Svih 12 sprintova dovršeno (2026-04-06).** MVP je kompletiran.
-> Detaljan status i commitovi u `docs/SPRINT_PLAN.md`.
+> **MVP KOMPLETIRAN 2026-04-06. Svih 12 sprintova dovršeno.**
 
 | Sprint | Modul | Status |
 |--------|-------|--------|
-| 001 | Foundation + Auth | ✅ |
-| 002 | Onboarding wizard | ✅ |
-| 003 | M01 Djelatnici CRUD | ✅ |
-| 004 | M03 Osposobljavanja | ✅ |
-| 005 | M04 Zdravstveni pregledi | ✅ |
-| 006 | M05 Radna oprema | ✅ |
-| 007 | M11 Akcijski centar | ✅ |
+| 001 | Foundation: Auth + CF deploy | ✅ |
+| 002 | Onboarding wizard + `create_tenant_with_owner` RPC | ✅ |
+| 003 | M01 Djelatnici CRUD + 61 Carta CSV import | ✅ |
+| 004 | M03 Osposobljavanja + status engine | ✅ |
+| 005 | M04 Zdravstveni pregledi + auto next_check | ✅ |
+| 006 | M05 Radna oprema + vatrogasni aparati | ✅ |
+| 007 | M11 Akcijski centar + 52 backfilled taska | ✅ |
 | 008 | PDF: EK-1, EK-2, EK-4, EK-5, ZOS | ✅ |
 | 009 | M02 Radna mjesta + procjena rizika | ✅ |
-| 010 | M08 Ozljede 48h HZZO | ✅ |
-| 011 | ZNR stručnjak multi-klijent | ✅ |
-| 012 | M12 Inspekcijska mapa | ✅ |
+| 010 | M08 Ozljede + 48h HZZO alarm | ✅ |
+| 011 | ZNR stručnjak multi-klijent (Tip C) | ✅ |
+| 012 | M12 Inspekcijska mapa (CSV + JSON bundle) | ✅ |
 
-### Sprint 012 — M12 Inspekcijska mapa
-**Cilj:** Jedan klik → ZIP za inspektora — killer feature.
-- [ ] Agregira sve zakonski obvezne dokumente
-- [ ] Generira ZIP arhivu s PDFovima
-- [ ] Godišnje izvješće (statistika, rokovi)
-- [ ] M09 Evakuacija i vježbe (osnove)
-- **Output:** Inspekcijska mapa radi. MVP je kompletan.
+### Faza 2 — Sljedeće (nakon validacije)
+
+| Prioritet | Feature | Napomena |
+|-----------|---------|---------|
+| 🔴 Visok | Email alarmi (Resend Edge Function) | pg_cron → trigger → email |
+| 🔴 Visok | Lokalni SQL za migracije 010-011 | Backfill u supabase/migrations/ |
+| 🟠 Srednji | OIR-1 / ER-2 PDF obrasci | HZZO specifični za ozljede |
+| 🟠 Srednji | QR kod na opremi | qr_code_token postoji u tablici |
+| 🟠 Srednji | Digitalni potpis flow | Email link "Potvrđujem" |
+| 🟡 Nizak | M06 Radni okoliš | PR-05 — ispitivanja |
+| 🟡 Nizak | M07 OZO | PR-06 NN 5/21 |
+| 🟡 Nizak | M09 Evakuacija | čl. 45 ZZnR |
+| 🟡 Nizak | M10 SDS listovi | REACH EU |
 
 ---
 
 ## 6. BAZA PODATAKA — KONVENCIJE
 
-### Tablice u zajedničkoj bazi
-tenants, tenant_users, znr_specialist_clients, legal_references, workers, trainings, health_checks, equipment, audit_log
+### Tablice (sve u jednoj bazi)
 
-### Tablice u tenant projektu
-```sql
--- Konvencije:
--- Snake_case za sve
--- UUID primary keys (gen_random_uuid())
--- created_at / updated_at TIMESTAMPTZ na svakoj tablici
--- created_by / updated_by UUID (user ID)
--- status TEXT s enum check (active/inactive/deleted — nikad brisati!)
--- Svaka tablica ima odgovarajući RLS
--- Svaka promjena ide u audit_log
-
--- Standardni stupci na svakoj tablici:
-id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-created_by UUID,  -- Supabase auth.users().id
-updated_by UUID
+```
+tenants, tenant_users, znr_specialist_clients,
+workers, work_positions, trainings, health_checks,
+equipment, incidents, tasks,
+legal_references (globalno),
+audit_log (GDPR)
 ```
 
-### [ZAK] Tablica legal_references
-Ovo je srce sustava. Svaki alarm, svaki rok, svaka UI poruka uzima podatke odavde.
+### SQL konvencije
+
+```sql
+-- Snake_case za sve
+-- UUID primary keys (gen_random_uuid())
+-- created_at / updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+-- created_by / updated_by UUID (auth.uid())
+-- status TEXT s enum check (NIKAD ne brisati — soft delete!)
+-- tenant_id UUID NOT NULL REFERENCES tenants(id) na svakoj ZNR tablici
+-- RLS na svakoj tablici
+-- audit_log trigger na svakoj tablici s osobnim podacima
+```
+
+### [ZAK] Tablica legal_references — srce sustava
 
 ```typescript
 interface LegalReference {
   id: string
-  code: string              // npr. "ZZnR-27-30d"
-  title: string             // "Zakon o zaštiti na radu"
-  article: string | null    // "čl. 27"
-  nn_number: string | null  // "NN 71/14, 118/14, 94/18, 96/18"
-  effective_date: string | null
-  description: string | null // "Osposobljavanje novog radnika"
-  deadline_days: number | null // 30 (null = nije fiksni rok)
-  deadline_description: string | null // "30 dana od dana zaposlenja"
-  module_codes: string[]    // ["M03"]
+  code: string                    // 'ZZnR-27-novi-radnik-30d'
+  title: string                   // 'Zakon o zaštiti na radu'
+  article: string | null          // 'čl. 27'
+  nn_number: string | null        // 'NN 71/14, 118/14, 94/18, 96/18'
+  deadline_days: number | null    // 30 (null = nije fiksni rok)
+  deadline_description: string | null // '30 dana od dana zaposlenja'
+  module_codes: string[]          // ['M03']
   is_active: boolean
-  superseded_by: string | null
-  last_verified: string | null
   source_url: string | null
 }
 ```
+
+Ažuriranje: `UPDATE legal_references SET deadline_days = X WHERE code = '...'`  
+Efekt: sve tvrtke odmah dobivaju novi rok — **bez deplooya**.
 
 ---
 
 ## 7. UI KONVENCIJE
 
-### Boje alarma (uvijek konzistentno)
+### Boje alarma (konzistentno kroz cijeli sustav)
 ```typescript
 const ALARM_COLORS = {
-  critical: 'bg-red-50 border-red-500 text-red-800',    // isteklo, 48h
-  urgent:   'bg-orange-50 border-orange-400 text-orange-800', // uskoro (<30d)
-  warning:  'bg-yellow-50 border-yellow-400 text-yellow-800', // nadomak (<60d)
-  info:     'bg-blue-50 border-blue-400 text-blue-800',  // informacija
-  ok:       'bg-green-50 border-green-400 text-green-800' // uredano
+  critical: 'bg-red-50 border-red-500 text-red-800',      // isteklo, 48h
+  urgent:   'bg-orange-50 border-orange-400 text-orange-800', // <30 dana
+  warning:  'bg-yellow-50 border-yellow-400 text-yellow-800', // <60 dana
+  info:     'bg-blue-50 border-blue-400 text-blue-800',    // <90 dana
+  ok:       'bg-green-50 border-green-400 text-green-800', // uredno
 } as const
 ```
 
 ### LegalBadge — UVIJEK uz alarm
 ```tsx
-// Svaki alarm mora imati zakonsku referencu vidljivu korisniku
-<LegalBadge 
-  article="čl. 27 ZZnR" 
+<LegalBadge
+  article="čl. 27 ZZnR"
   deadline="30 dana od zaposlenja"
   penalty="Kazna: 5.000–50.000 EUR"  // samo za kritične
 />
 ```
 
-### Paginacija, filtriranje, pretraživanje
-- Svaki popis (tablica) ima: pretraživanje, filtre, paginaciju (25 po stranici)
-- Filteri su URL-based (shareable links)
-- Export: CSV + PDF za sve popise
+### UI terminologija
+- **"Djelatnici"** — korisnik uvijek vidi ovaj naziv
+- **"Osposobljavanja"**, **"Zdravstveni pregledi"**, **"Radna oprema"** — nepromijenjeno
+- Svaki popis: pretraživanje + filtriranje + paginacija (25/str)
 
 ---
 
 ## 8. GITHUB + DEPLOYMENT
 
 ### GitHub workflow
+
 ```bash
-main branch       # production — Cloudflare Pages deploya automatski
-develop branch    # integracijska grana
-feature/sprint-XXX # sprint grane
+main branch         # production — CF Pages deploya automatski
+develop branch      # integracijska grana
+feature/sprint-XXX  # sprint grane
 
 # Commit konvencija:
 feat(M03): add training deadline alarm [ZAK: čl.27 ZZnR]
 fix(M04): health check date validation
 chore: update dependencies
-docs: add sprint 003 analysis
+docs: update ANALIZA.md sprint 012
 ```
 
-### GitHub account setup (za Atilu)
-1. Kreiraj GitHub account na: https://github.com/signup
-2. Preporučeno korisničko ime: `vadociatila-source`
-3. Kreiraj repo: `znr-erp` (private za sad)
-4. Dodaj SSH key ili koristi HTTPS s personal access tokenom
+### Cloudflare Pages
 
-### Cloudflare Pages setup
-1. Cloudflare account: https://dash.cloudflare.com
-2. Pages → Connect to Git → GitHub repo `znr-erp`
-3. Build settings:
-   ```
-   Build command: npm run build
-   Build output directory: dist
-   Root directory: /
-   ```
-4. Environment variables: sve iz `.env.example` (bez `VITE_` prefiksa nije potrebno)
+```
+Pages → Connect to Git → vadociatila-source/znr-erp
+Build command: npm run build
+Build output: dist
+```
 
 ---
 
 ## 9. ENVIRONMENT VARIJABLE
 
-Vidi `.env.example` za kompletnu listu. Kritično:
-
 ```bash
-# META-REGISTRY (jedan Supabase projekt)
-VITE_SUPABASE_URL=      # Supabase URL
-VITE_SUPABASE_ANON_KEY= # anon key
-
-
-# Email (Resend)
-VITE_RESEND_API_KEY=             # samo za server-side (Supabase Edge Functions)
+# Supabase — jedan projekt, jedna baza
+VITE_SUPABASE_URL=https://nezvlavmduedcaiaumgi.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJ...   # iz Settings → API → anon public
 
 # App
 VITE_APP_URL=http://localhost:5173
+VITE_APP_NAME=ZNR ERP
+VITE_APP_ENV=development
+
+# Resend — SAMO u GitHub Secrets i Supabase Edge Functions
+# NIKAD ne dodavati VITE_ prefiks — bio bi javan u browseru!
+# GitHub Secret name: RESEND_API_KEY
+# Vrijednost: re_i6NP4HDn_iNnfLsmbC7aPXCiKGnQ78bNi
 ```
+
+### GitHub Secrets (za CI/CD deploy)
+
+| Secret | Vrijednost |
+|--------|-----------|
+| `VITE_SUPABASE_URL` | https://nezvlavmduedcaiaumgi.supabase.co |
+| `VITE_SUPABASE_ANON_KEY` | eyJ... |
+| `CLOUDFLARE_API_TOKEN` | iz Cloudflare API Tokens |
+| `CLOUDFLARE_ACCOUNT_ID` | iz Cloudflare dashboard |
+| `RESEND_API_KEY` | re_i6NP4HDn_iNnfLsmbC7aPXCiKGnQ78bNi |
 
 ---
 
@@ -455,29 +478,21 @@ VITE_APP_URL=http://localhost:5173
 
 ### Na početku svake sesije:
 1. Pročitaj ovaj CLAUDE.md
-2. Provjeri koji sprint radimo (docs/SPRINT_PLAN.md)
-3. Pročitaj ANALIZA.md ako postoji (feedback od prethodnog sprinta)
+2. Pročitaj ANALIZA.md (feedback od zadnjeg sprinta)
+3. Pročitaj docs/SPRINT_PLAN.md za kontekst
 
 ### Na kraju svakog sprinta:
-Napravi `ANALIZA.md` u root direktoriju s ovom strukturom:
+Napravi `ANALIZA.md` u root direktoriju:
 ```markdown
 # ANALIZA — Sprint XXX
 
 ## ✅ Što je napravljeno
-- Lista konkretnih feature-a koji rade
 
 ## ⚠️ Što ne radi / nije kompletno
-- Lista blokatora ili nedovršenih stavki
-
-## 🔴 Block issues
-- Specifični problemi koji blokiraju napredak
 
 ## 📋 Zakonska usklađenost
 - Koje [ZAK] tagove smo implementirali
 - Koje RLS politike su postavljene
-
-## 💡 Prijedlozi za sljedeći sprint
-- Što bi trebalo uzeti u obzir
 
 ## 🔧 Potrebne akcije od Atile
 - Supabase credentials
@@ -486,11 +501,12 @@ Napravi `ANALIZA.md` u root direktoriju s ovom strukturom:
 ```
 
 ### Nikad:
-- Ne brisati podatke (uvijek soft-delete: `status = 'former'/'deleted'`)
+- Ne brisati podatke (soft-delete: `status = 'former'/'deleted'/'inactive'`)
 - Ne hard-kodirati zakonske rokove (uvijek iz `legal_references`)
-- Ne commitat `.env` (samo `.env.example`)
+- Ne commitati `.env` (samo `.env.example`)
 - Ne ostavljati tablicu bez RLS
-- Ne ostavljati `any` u TypeScriptu bez komentara zašto
+- Ne ostavljati `any` u TypeScriptu bez komentara
+- Ne pisati "Radnici" u UI — uvijek **"Djelatnici"**
 
 ---
 
@@ -498,10 +514,12 @@ Napravi `ANALIZA.md` u root direktoriju s ovom strukturom:
 
 | Obveza | Rok | Alarm | [ZAK] |
 |--------|-----|-------|-------|
-| Osposobljavanje novog radnika | 30 dana | Dan 1 + Dan 20 | čl. 27 ZZnR |
-| Usavršavanje ZNR | 4 god | 60 dana unaprijed | čl. 27 ZZnR + PR-02 |
+| Osposobljavanje novog radnika | 30 dana | Dan 1 | čl. 27 ZZnR |
+| Usavršavanje ZNR | 4 god | 60 dana unaprijed | čl. 27 + PR-02 |
 | Periodički zdravstveni pregled | 1-3 god | 90/60/30 dana | čl. 34 ZZnR |
 | Pregled radne opreme | 3 god | 60 dana | PR-04 NN 16/16 |
+| Vatrogasni aparat (vizualni) | 1 god | 30 dana | ZOP NN 92/10 |
+| Vatrogasni aparat (servis) | 2 god | 60 dana | ZOP NN 92/10 |
 | Ispitivanje okoliša (fizikalni) | 3 god | 90 dana | PR-05 |
 | Ispitivanje okoliša (kemijski) | 2 god | 90 dana | PR-05 |
 | Vježba evakuacije | 1 god | 60 dana | čl. 45 ZZnR |
@@ -512,5 +530,5 @@ Napravi `ANALIZA.md` u root direktoriju s ovom strukturom:
 
 ---
 
-*CLAUDE.md verzija: 1.0 | Datum: Travanj 2026.*
-*Ažuriraj ovaj dokument kad se promijeni arhitektura ili dodaju moduli.*
+*CLAUDE.md v2.0 | Datum: Travanj 2026 | MVP kompletiran 2026-04-06*  
+*Ažuriraj ovaj dokument kad se promijeni arhitektura, dodaju moduli ili završe faze.*
