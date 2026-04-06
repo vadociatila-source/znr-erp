@@ -28,6 +28,7 @@ const OsposobljavanjaPage = lazy(() => import('@/modules/M03-osposobljavanja/pag
 const ZdravstveniPreglediPage = lazy(() => import('@/modules/M04-zdravstveni-pregledi/pages/ZdravstveniPreglediPage'))
 const RadnaOpremaPage = lazy(() => import('@/modules/M05-radna-oprema/pages/RadnaOpremaPage'))
 const AkcijskiCentarPage = lazy(() => import('@/modules/M11-akcijski-centar/pages/AkcijskiCentarPage'))
+const SpecijalistDashboardPage = lazy(() => import('@/modules/M11-akcijski-centar/pages/SpecijalistDashboardPage'))
 
 function LoadingFallback() {
   return (
@@ -146,6 +147,11 @@ export function AppRouter() {
         </Route>
         <Route path="/radna-oprema">
           <TenantRoute><RadnaOpremaPage /></TenantRoute>
+        </Route>
+
+        {/* ZNR Stručnjak dashboard */}
+        <Route path="/strucnjak">
+          <ProtectedRoute><SpecijalistDashboardPage /></ProtectedRoute>
         </Route>
 
         {/* M08 Ozljede */}
