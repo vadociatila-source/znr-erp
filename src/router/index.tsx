@@ -22,6 +22,8 @@ const HealthCheckFormPage = lazy(() => import('@/modules/M04-zdravstveni-pregled
 const EquipmentFormPage   = lazy(() => import('@/modules/M05-radna-oprema/pages/EquipmentFormPage'))
 const RadnaMjestaPage     = lazy(() => import('@/modules/M02-radna-mjesta/pages/RadnaMjestaPage'))
 const PositionFormPage    = lazy(() => import('@/modules/M02-radna-mjesta/pages/PositionFormPage'))
+const OzljededPage        = lazy(() => import('@/modules/M08-ozljede/pages/OzljededPage'))
+const IncidentFormPage    = lazy(() => import('@/modules/M08-ozljede/pages/IncidentFormPage'))
 const OsposobljavanjaPage = lazy(() => import('@/modules/M03-osposobljavanja/pages/OsposobljavanjaPage'))
 const ZdravstveniPreglediPage = lazy(() => import('@/modules/M04-zdravstveni-pregledi/pages/ZdravstveniPreglediPage'))
 const RadnaOpremaPage = lazy(() => import('@/modules/M05-radna-oprema/pages/RadnaOpremaPage'))
@@ -144,6 +146,14 @@ export function AppRouter() {
         </Route>
         <Route path="/radna-oprema">
           <TenantRoute><RadnaOpremaPage /></TenantRoute>
+        </Route>
+
+        {/* M08 Ozljede */}
+        <Route path="/ozljede/novo">
+          <TenantRoute><IncidentFormPage /></TenantRoute>
+        </Route>
+        <Route path="/ozljede">
+          <TenantRoute><OzljededPage /></TenantRoute>
         </Route>
 
         {/* 404 */}

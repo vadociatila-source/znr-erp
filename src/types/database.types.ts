@@ -60,6 +60,96 @@ export type Database = {
           },
         ]
       }
+      incidents: {
+        Row: {
+          id: string
+          tenant_id: string
+          worker_id: string
+          incident_date: string
+          report_deadline: string
+          description: string
+          injury_type: string | null
+          body_part: string | null
+          location: string | null
+          witnesses: string | null
+          immediate_actions: string | null
+          cause_analysis: string | null
+          preventive_measures: string | null
+          hzzo_reported: boolean
+          hzzo_reported_at: string | null
+          legal_ref_code: string | null
+          status: string
+          notes: string | null
+          created_at: string
+          updated_at: string
+          created_by: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          id?: string
+          tenant_id: string
+          worker_id: string
+          incident_date: string
+          report_deadline: string
+          description: string
+          injury_type?: string | null
+          body_part?: string | null
+          location?: string | null
+          witnesses?: string | null
+          immediate_actions?: string | null
+          cause_analysis?: string | null
+          preventive_measures?: string | null
+          hzzo_reported?: boolean
+          hzzo_reported_at?: string | null
+          legal_ref_code?: string | null
+          status?: string
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+          created_by?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          id?: string
+          tenant_id?: string
+          worker_id?: string
+          incident_date?: string
+          report_deadline?: string
+          description?: string
+          injury_type?: string | null
+          body_part?: string | null
+          location?: string | null
+          witnesses?: string | null
+          immediate_actions?: string | null
+          cause_analysis?: string | null
+          preventive_measures?: string | null
+          hzzo_reported?: boolean
+          hzzo_reported_at?: string | null
+          legal_ref_code?: string | null
+          status?: string
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+          created_by?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incidents_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_worker_id_fkey"
+            columns: ["worker_id"]
+            isOneToOne: false
+            referencedRelation: "workers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       equipment: {
         Row: {
           created_at: string
