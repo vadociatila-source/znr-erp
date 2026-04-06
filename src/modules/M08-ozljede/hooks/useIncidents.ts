@@ -10,9 +10,12 @@ export function useIncidentsList(filters: IncidentFilters) {
   const [incidents, setIncidents] = useState<IncidentWithWorker[]>([])
   const [totalCount, setTotalCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const fetch = useCallback(async () => {
     setIsLoading(true)
+    setError(null)
+
     let query = supabase
       .from('incidents')
       .select('*, worker:workers!worker_id(id, first_name, last_name)', { count: 'exact' })
@@ -22,14 +25,16 @@ export function useIncidentsList(filters: IncidentFilters) {
     const from = (filters.page - 1) * INC_PAGE_SIZE
     query = query.order('incident_date', { ascending: false }).range(from, from + INC_PAGE_SIZE - 1)
 
-    const { data, count } = await query
-    setIncidents((data ?? []) as unknown as IncidentWithWorker[])
-    setTotalCount(count ?? 0)
+    const { data, error: err, count } = await query
+    if (err) { setError(err.message) } else {
+      setIncidents((data ?? []) as unknown as IncidentWithWorker[])
+      setTotalCount(count ?? 0)
+    }
     setIsLoading(false)
   }, [filters.status, filters.page])
 
   useEffect(() => { fetch() }, [fetch])
-  return { incidents, totalCount, isLoading, refetch: fetch }
+  return { incidents, totalCount, isLoading, error, refetch: fetch }
 }
 
 export function useIncidentMutations() {

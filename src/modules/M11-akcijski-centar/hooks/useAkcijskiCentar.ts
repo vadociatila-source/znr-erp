@@ -30,6 +30,15 @@ type EquipmentItem = {
   legal_ref_code: string | null; location: string | null; status: string
 }
 
+type IncidentItem = {
+  id: string; report_deadline: string; hzzo_reported: boolean; description: string
+  worker: { id: string; first_name: string; last_name: string } | null
+}
+
+type PositionItem = {
+  id: string; name: string; risk_assessment_next: string | null
+}
+
 export interface AkcijskiItem {
   id: string
   level: AlarmLevel
@@ -171,6 +180,66 @@ export function useAkcijskiCentar() {
         legalRefCode: eq.legal_ref_code,
         moduleCode: 'M05',
         actionUrl: '/radna-oprema',
+      })
+    }
+
+    // 5) Incidents with overdue HZZO reporting (M08)
+    // [ZAK: čl. 62 ZZnR] Neprijavljene ozljede s isteklim 48h rokom
+    const { data: incRaw } = await supabase
+      .from('incidents')
+      .select('id, report_deadline, hzzo_reported, description, worker:workers!worker_id(id, first_name, last_name)')
+      .eq('hzzo_reported', false)
+    const incList = (incRaw ?? []) as unknown as IncidentItem[]
+
+    for (const inc of incList) {
+      const hours = (new Date(inc.report_deadline).getTime() - Date.now()) / (1000 * 60 * 60)
+      const days = Math.ceil(hours / 24)
+      const w = inc.worker
+      allItems.push({
+        id: `incident-${inc.id}`,
+        level: hours <= 0 ? 'critical' : hours <= 24 ? 'urgent' : 'warning',
+        title: 'HITNO: Prijava ozljede HZZO',
+        description: w ? `${w.first_name} ${w.last_name}` : inc.description.slice(0, 50),
+        entityType: 'task',
+        entityId: inc.id,
+        workerId: w?.id ?? null,
+        workerName: w ? `${w.first_name} ${w.last_name}` : null,
+        dueDate: inc.report_deadline,
+        daysUntilDue: days,
+        legalRefCode: 'ZZnR-62-prijava-48h',
+        moduleCode: 'M08',
+        actionUrl: '/ozljede',
+      })
+    }
+
+    // 6) Risk assessments overdue (M02)
+    // [ZAK: čl. 18 ZZnR] Revizija procjene rizika min. svake 2 godine
+    const { data: posRaw } = await supabase
+      .from('work_positions')
+      .select('id, name, risk_assessment_next')
+      .eq('status', 'active')
+      .not('risk_assessment_next', 'is', null)
+      .lte('risk_assessment_next', new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10))
+    const posList = (posRaw ?? []) as unknown as PositionItem[]
+
+    for (const pos of posList) {
+      const days = pos.risk_assessment_next
+        ? Math.ceil((new Date(pos.risk_assessment_next).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+        : null
+      allItems.push({
+        id: `risk-${pos.id}`,
+        level: days !== null ? getAlarmLevel(days) : 'warning',
+        title: `Revizija procjene rizika: ${pos.name}`,
+        description: 'Procjena rizika zahtijeva reviziju',
+        entityType: 'task',
+        entityId: pos.id,
+        workerId: null,
+        workerName: null,
+        dueDate: pos.risk_assessment_next,
+        daysUntilDue: days,
+        legalRefCode: 'ZZnR-18-procjena-2god',
+        moduleCode: 'M02',
+        actionUrl: '/radna-mjesta',
       })
     }
 
