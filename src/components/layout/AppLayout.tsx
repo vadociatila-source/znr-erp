@@ -35,6 +35,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/evakuacija',          label: 'Evakuacija',          icon: <FlameKindling size={18} />,    moduleCode: 'M09' },
   { href: '/sds',                 label: 'SDS listovi',         icon: <FileText size={18} />,         moduleCode: 'M10' },
   { href: '/izvjesca',            label: 'Izvješća',            icon: <BarChart3 size={18} />,        moduleCode: 'M12' },
+  { href: '/postavke',            label: 'Postavke',            icon: <Shield size={18} />,           moduleCode: 'SET' },
 ]
 
 interface SidebarItemProps {

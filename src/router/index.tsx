@@ -33,6 +33,7 @@ const OzoPage            = lazy(() => import('@/modules/M07-ozo/pages/OzoPage'))
 const EvakuacijaPage     = lazy(() => import('@/modules/M09-evakuacija/pages/EvakuacijaPage'))
 const SdsPage            = lazy(() => import('@/modules/M10-sds/pages/SdsPage'))
 const IzvjescaPage       = lazy(() => import('@/modules/M12-izvjesca/pages/IzvjescaPage'))
+const SettingsPage       = lazy(() => import('@/pages/settings/SettingsPage'))
 const SpecijalistDashboardPage = lazy(() => import('@/modules/M11-akcijski-centar/pages/SpecijalistDashboardPage'))
 
 function LoadingFallback() {
@@ -157,6 +158,11 @@ export function AppRouter() {
         {/* ZNR Stručnjak dashboard */}
         <Route path="/strucnjak">
           <ProtectedRoute><SpecijalistDashboardPage /></ProtectedRoute>
+        </Route>
+
+        {/* Postavke */}
+        <Route path="/postavke">
+          <TenantRoute><SettingsPage /></TenantRoute>
         </Route>
 
         {/* M06, M07, M09, M10, M12 */}

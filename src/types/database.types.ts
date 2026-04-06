@@ -60,6 +60,102 @@ export type Database = {
           },
         ]
       }
+      environment_tests: {
+        Row: {
+          id: string; tenant_id: string; test_type: string; test_name: string
+          test_date: string; next_test_date: string | null; provider: string | null
+          location: string | null; result: string | null; document_url: string | null
+          legal_ref_code: string | null; notes: string | null; status: string
+          created_at: string; updated_at: string; created_by: string | null; updated_by: string | null
+        }
+        Insert: {
+          id?: string; tenant_id: string; test_type: string; test_name: string
+          test_date: string; next_test_date?: string | null; provider?: string | null
+          location?: string | null; result?: string | null; document_url?: string | null
+          legal_ref_code?: string | null; notes?: string | null; status?: string
+          created_at?: string; updated_at?: string; created_by?: string | null; updated_by?: string | null
+        }
+        Update: {
+          id?: string; tenant_id?: string; test_type?: string; test_name?: string
+          test_date?: string; next_test_date?: string | null; provider?: string | null
+          location?: string | null; result?: string | null; document_url?: string | null
+          legal_ref_code?: string | null; notes?: string | null; status?: string
+          created_at?: string; updated_at?: string; created_by?: string | null; updated_by?: string | null
+        }
+        Relationships: [{ foreignKeyName: "environment_tests_tenant_id_fkey"; columns: ["tenant_id"]; isOneToOne: false; referencedRelation: "tenants"; referencedColumns: ["id"] }]
+      }
+      evacuations: {
+        Row: {
+          id: string; tenant_id: string; drill_date: string; next_drill_date: string | null
+          drill_type: string; participants: number | null; duration_minutes: number | null
+          location: string | null; findings: string | null; corrective_actions: string | null
+          document_url: string | null; legal_ref_code: string | null; notes: string | null
+          status: string; created_at: string; updated_at: string; created_by: string | null; updated_by: string | null
+        }
+        Insert: {
+          id?: string; tenant_id: string; drill_date: string; next_drill_date?: string | null
+          drill_type?: string; participants?: number | null; duration_minutes?: number | null
+          location?: string | null; findings?: string | null; corrective_actions?: string | null
+          document_url?: string | null; legal_ref_code?: string | null; notes?: string | null
+          status?: string; created_at?: string; updated_at?: string; created_by?: string | null; updated_by?: string | null
+        }
+        Update: {
+          id?: string; tenant_id?: string; drill_date?: string; next_drill_date?: string | null
+          drill_type?: string; participants?: number | null; duration_minutes?: number | null
+          location?: string | null; findings?: string | null; corrective_actions?: string | null
+          document_url?: string | null; legal_ref_code?: string | null; notes?: string | null
+          status?: string; created_at?: string; updated_at?: string; created_by?: string | null; updated_by?: string | null
+        }
+        Relationships: [{ foreignKeyName: "evacuations_tenant_id_fkey"; columns: ["tenant_id"]; isOneToOne: false; referencedRelation: "tenants"; referencedColumns: ["id"] }]
+      }
+      ozo_records: {
+        Row: {
+          id: string; tenant_id: string; worker_id: string; item_name: string
+          item_type: string | null; issued_date: string; replacement_date: string | null
+          quantity: number; size: string | null; notes: string | null; status: string
+          created_at: string; updated_at: string; created_by: string | null; updated_by: string | null
+        }
+        Insert: {
+          id?: string; tenant_id: string; worker_id: string; item_name: string
+          item_type?: string | null; issued_date: string; replacement_date?: string | null
+          quantity?: number; size?: string | null; notes?: string | null; status?: string
+          created_at?: string; updated_at?: string; created_by?: string | null; updated_by?: string | null
+        }
+        Update: {
+          id?: string; tenant_id?: string; worker_id?: string; item_name?: string
+          item_type?: string | null; issued_date?: string; replacement_date?: string | null
+          quantity?: number; size?: string | null; notes?: string | null; status?: string
+          created_at?: string; updated_at?: string; created_by?: string | null; updated_by?: string | null
+        }
+        Relationships: [
+          { foreignKeyName: "ozo_records_tenant_id_fkey"; columns: ["tenant_id"]; isOneToOne: false; referencedRelation: "tenants"; referencedColumns: ["id"] },
+          { foreignKeyName: "ozo_records_worker_id_fkey"; columns: ["worker_id"]; isOneToOne: false; referencedRelation: "workers"; referencedColumns: ["id"] }
+        ]
+      }
+      sds_documents: {
+        Row: {
+          id: string; tenant_id: string; chemical_name: string; cas_number: string | null
+          supplier: string | null; location: string | null; hazard_classes: string[] | null
+          received_date: string | null; expiry_date: string | null; document_url: string | null
+          notes: string | null; status: string; created_at: string; updated_at: string
+          created_by: string | null; updated_by: string | null
+        }
+        Insert: {
+          id?: string; tenant_id: string; chemical_name: string; cas_number?: string | null
+          supplier?: string | null; location?: string | null; hazard_classes?: string[] | null
+          received_date?: string | null; expiry_date?: string | null; document_url?: string | null
+          notes?: string | null; status?: string; created_at?: string; updated_at?: string
+          created_by?: string | null; updated_by?: string | null
+        }
+        Update: {
+          id?: string; tenant_id?: string; chemical_name?: string; cas_number?: string | null
+          supplier?: string | null; location?: string | null; hazard_classes?: string[] | null
+          received_date?: string | null; expiry_date?: string | null; document_url?: string | null
+          notes?: string | null; status?: string; created_at?: string; updated_at?: string
+          created_by?: string | null; updated_by?: string | null
+        }
+        Relationships: [{ foreignKeyName: "sds_documents_tenant_id_fkey"; columns: ["tenant_id"]; isOneToOne: false; referencedRelation: "tenants"; referencedColumns: ["id"] }]
+      }
       incidents: {
         Row: {
           id: string
