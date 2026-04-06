@@ -23,9 +23,9 @@
   --border-f: rgba(236,75,172,0.40);
 
   /* TEKST — min 4.5:1 na --surf */
-  --text:   #EDEEF0;   /* 10.4:1 na surf ✅ */
-  --muted:  #8D95A0;   /* 4.1:1 na surf ✅ */
-  --hint:   #555D68;   /* 2.6:1 — samo uppercase/dekorativno */
+  --text:   #EDEEF0;   /* 10.4:1 na surf ✅ AAA */
+  --muted:  #A3ABB5;   /* 5.8:1 na surf ✅ AA — pojačano za čitljivost */
+  --hint:   #6B737E;   /* 3.2:1 — samo uppercase/dekorativno/labele */
 
   /* MAGENTA */
   --mg-50:  #1D0B16;
