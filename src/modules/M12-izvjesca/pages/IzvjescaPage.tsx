@@ -1,6 +1,5 @@
 // M12 — Izvješća + Inspekcijska mapa
-// Jedan klik → svi zakonski obvezni dokumenti za inspektora
-// MVP: CSV/JSON export. Sprint 008 će dodati PDF generiranje.
+// Jedan klik → Excel s više listova, razriješena imena umjesto UUID-ova
 
 import { FileArchive, Download } from 'lucide-react'
 import { AppLayout } from '@/components/layout/AppLayout'
@@ -49,10 +48,10 @@ export default function IzvjescaPage() {
                 onClick={exportZip}
                 isLoading={isExporting}
               >
-                Preuzmi inspekcijsku mapu
+                Preuzmi inspekcijsku mapu (.xlsx)
               </Button>
               <p className="text-xs text-[var(--hint)] mt-2">
-                MVP verzija: CSV + JSON format. PDF obrasci (EK-1, EK-2, EK-4, EK-5, ZOS) dolaze u Sprint 008.
+                Jedna Excel datoteka s 7 listova — sažetak + 6 evidencija s punim nazivima (bez UUID-ova).
               </p>
             </div>
           </div>
