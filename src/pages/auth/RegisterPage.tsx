@@ -28,6 +28,16 @@ export default function RegisterPage() {
 
     setIsLoading(true)
     try {
+      const { data: hasInvite, error: checkErr } = await supabase.rpc('has_pending_invite', {
+        p_email: form.email.trim(),
+      })
+      if (checkErr) throw checkErr
+      if (!hasInvite) {
+        toast.error('Nema aktivne pozivnice za ovaj email. Kontaktirajte administratora tvrtke.')
+        setIsLoading(false)
+        return
+      }
+
       const { error } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
@@ -62,7 +72,7 @@ export default function RegisterPage() {
 
         <div className="bg-[var(--surf)] rounded-[12px] border border-[var(--border)]  p-6">
           <h2 className="text-lg font-semibold text-[var(--text)] mb-1">Novi račun</h2>
-          <p className="text-sm text-[var(--muted)] mb-6">Kreirajte račun za vašu tvrtku</p>
+          <p className="text-sm text-[var(--muted)] mb-6">Registracija je moguća samo uz pozivnicu administratora.</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input label="Ime i prezime" type="text" value={form.fullName}

@@ -879,6 +879,42 @@ export type Database = {
           },
         ]
       }
+      tenant_invitations: {
+        Row: {
+          id: string
+          tenant_id: string
+          email: string
+          role: string
+          invited_by: string | null
+          expires_at: string
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          tenant_id: string
+          email: string
+          role: string
+          invited_by?: string | null
+          expires_at?: string
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          tenant_id?: string
+          email?: string
+          role?: string
+          invited_by?: string | null
+          expires_at?: string
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+        }
+        Relationships: [{ foreignKeyName: "tenant_invitations_tenant_id_fkey"; columns: ["tenant_id"]; isOneToOne: false; referencedRelation: "tenants"; referencedColumns: ["id"] }]
+      }
       znr_specialist_clients: {
         Row: {
           accepted_at: string | null
@@ -925,11 +961,24 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      tenant_members_v: {
+        Row: {
+          id: string
+          tenant_id: string
+          user_id: string
+          role: string
+          is_external_specialist: boolean
+          created_at: string
+          user_email: string
+        }
+        Relationships: []
+      }
     }
     Functions: {
       auth_tenant_ids: { Args: Record<string, never>; Returns: string[] }
       auth_tenant_role: { Args: { p_tenant_id: string }; Returns: string }
+      has_pending_invite: { Args: { p_email: string }; Returns: boolean }
+      invite_user_by_email: { Args: { p_email: string; p_role?: string }; Returns: Json }
       create_tenant_with_owner: {
         Args: {
           p_address?: string

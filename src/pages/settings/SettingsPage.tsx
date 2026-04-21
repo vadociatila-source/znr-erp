@@ -92,38 +92,71 @@ function TvrtkaTab() {
 }
 
 // ── Korisnici tab ──
-type TenantUserRow = {
+type TenantMemberRow = {
   id: string; user_id: string; role: string; is_external_specialist: boolean; created_at: string
-  user_email?: string
+  user_email: string
+}
+
+type PendingInvite = {
+  id: string; email: string; role: string; expires_at: string; created_at: string
 }
 
 function KorisniciTab() {
   const tenant = useTenantStore(s => s.activeTenant)
-  const [users, setUsers] = useState<TenantUserRow[]>([])
+  const [members, setMembers] = useState<TenantMemberRow[]>([])
+  const [invites, setInvites] = useState<PendingInvite[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showInvite, setShowInvite] = useState(false)
   const [inviteEmail, setInviteEmail] = useState('')
   const [inviteRole, setInviteRole] = useState<string>('hr')
-  const [inviting] = useState(false)
+  const [inviting, setInviting] = useState(false)
 
-  useEffect(() => {
+  const loadData = async () => {
     if (!tenant) return
-    supabase
-      .from('tenant_users')
-      .select('*')
-      .eq('tenant_id', tenant.id)
-      .order('created_at')
-      .then(({ data }) => {
-        setUsers((data ?? []) as TenantUserRow[])
-        setIsLoading(false)
-      })
-  }, [tenant?.id])
+    setIsLoading(true)
+    const [mRes, iRes] = await Promise.all([
+      supabase.from('tenant_members_v').select('*').eq('tenant_id', tenant.id).order('created_at'),
+      supabase.from('tenant_invitations').select('id,email,role,expires_at,created_at')
+        .eq('tenant_id', tenant.id).is('accepted_at', null).order('created_at', { ascending: false }),
+    ])
+    setMembers((mRes.data ?? []) as TenantMemberRow[])
+    setInvites((iRes.data ?? []) as PendingInvite[])
+    setIsLoading(false)
+  }
+
+  useEffect(() => { loadData() }, [tenant?.id])
 
   const handleInvite = async () => {
-    // Za sad: placeholder — pravi invite flow zahtijeva Supabase Edge Function
-    // za slanje email pozivnice. Ovdje samo dodajemo u tenant_users ako user postoji.
-    toast.error('Email pozivnice zahtijevaju Resend integraciju (Faza 2). Korisnik se mora sam registrirati.')
+    if (!inviteEmail.trim() || !inviteEmail.includes('@')) {
+      toast.error('Unesite ispravnu email adresu')
+      return
+    }
+    setInviting(true)
+    const { data, error } = await supabase.rpc('invite_user_by_email', {
+      p_email: inviteEmail.trim(),
+      p_role: inviteRole,
+    })
+    setInviting(false)
+    if (error) {
+      toast.error(error.message)
+      return
+    }
+    const status = (data as { status?: string } | null)?.status
+    if (status === 'added') toast.success('Korisnik dodan u tenant')
+    else if (status === 'invited') toast.success('Pozivnica kreirana — korisnik se može registrirati na /register')
     setShowInvite(false)
+    setInviteEmail('')
+    setInviteRole('hr')
+    loadData()
+  }
+
+  const handleCancelInvite = async (id: string) => {
+    const { error } = await supabase.from('tenant_invitations').delete().eq('id', id)
+    if (error) toast.error(error.message)
+    else {
+      setInvites(is => is.filter(i => i.id !== id))
+      toast.success('Pozivnica poništena')
+    }
   }
 
   const handleRoleChange = async (userId: string, newRole: string) => {
@@ -134,7 +167,7 @@ function KorisniciTab() {
       .eq('tenant_id', tenant?.id ?? '')
     if (error) toast.error(error.message)
     else {
-      setUsers(us => us.map(u => u.user_id === userId ? { ...u, role: newRole } : u))
+      setMembers(us => us.map(u => u.user_id === userId ? { ...u, role: newRole } : u))
       toast.success('Uloga ažurirana')
     }
   }
@@ -142,10 +175,10 @@ function KorisniciTab() {
   if (isLoading) return <div className="flex justify-center py-8"><Spinner /></div>
 
   return (
-    <>
+    <div className="space-y-4">
       <Card padding="lg">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-[var(--text)]">Korisnici ({users.length})</h3>
+          <h3 className="text-sm font-semibold text-[var(--text)]">Korisnici ({members.length})</h3>
           <Button size="sm" leftIcon={<Plus size={14} />} onClick={() => setShowInvite(true)}>
             Pozovi korisnika
           </Button>
@@ -154,17 +187,17 @@ function KorisniciTab() {
         <Table>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>User ID</Table.HeaderCell>
+              <Table.HeaderCell>Email</Table.HeaderCell>
               <Table.HeaderCell>Uloga</Table.HeaderCell>
               <Table.HeaderCell>Vanjski stručnjak</Table.HeaderCell>
               <Table.HeaderCell>Dodano</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {users.map(u => (
+            {members.map(u => (
               <Table.Row key={u.id}>
                 <Table.Cell>
-                  <span className="font-mono text-xs">{u.user_id.slice(0, 8)}...</span>
+                  <span className="text-sm text-[var(--text)]">{u.user_email}</span>
                 </Table.Cell>
                 <Table.Cell>
                   <Select
@@ -187,6 +220,42 @@ function KorisniciTab() {
         </Table>
       </Card>
 
+      {invites.length > 0 && (
+        <Card padding="lg">
+          <h3 className="text-sm font-semibold text-[var(--text)] mb-4">
+            Pozivnice na čekanju ({invites.length})
+          </h3>
+          <Table>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Email</Table.HeaderCell>
+                <Table.HeaderCell>Uloga</Table.HeaderCell>
+                <Table.HeaderCell>Istječe</Table.HeaderCell>
+                <Table.HeaderCell>Akcije</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {invites.map(i => (
+                <Table.Row key={i.id}>
+                  <Table.Cell><span className="text-sm">{i.email}</span></Table.Cell>
+                  <Table.Cell><Badge variant="info">{ROLE_LABELS[i.role as UserRole] ?? i.role}</Badge></Table.Cell>
+                  <Table.Cell>
+                    <span className="text-xs text-[var(--muted)]">
+                      {new Date(i.expires_at).toLocaleDateString('hr-HR')}
+                    </span>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Button variant="ghost" size="sm" onClick={() => handleCancelInvite(i.id)}>
+                      Poništi
+                    </Button>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        </Card>
+      )}
+
       <Modal isOpen={showInvite} onClose={() => setShowInvite(false)} title="Pozovi korisnika" size="sm"
         footer={<>
           <Button variant="outline" onClick={() => setShowInvite(false)}>Odustani</Button>
@@ -200,11 +269,12 @@ function KorisniciTab() {
             options={Object.entries(ROLE_LABELS).map(([v, l]) => ({ value: v, label: l }))}
             value={inviteRole} onChange={e => setInviteRole(e.target.value)} />
           <Alert variant="info">
-            Korisnik mora imati ZNR ERP račun. Ako nema, mora se prvo registrirati.
+            Ako korisnik već ima ZNR ERP račun, odmah se dodaje u tvrtku.
+            Ako nema, kreira se pozivnica (vrijedi 14 dana) — korisnik se registrira na <strong>/register</strong> s tim emailom i automatski postaje član tvrtke.
           </Alert>
         </div>
       </Modal>
-    </>
+    </div>
   )
 }
 
