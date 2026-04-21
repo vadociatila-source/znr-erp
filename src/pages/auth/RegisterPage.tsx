@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import { useLocation } from 'wouter'
-import { Shield, Mail, Lock, User } from 'lucide-react'
+import { Shield, Mail, Lock, User, Building2, Ticket } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/index'
 import toast from 'react-hot-toast'
 
+type RegisterMode = 'invite' | 'company'
+
 export default function RegisterPage() {
   const [, navigate] = useLocation()
+  const [mode, setMode] = useState<RegisterMode>('invite')
   const [isLoading, setIsLoading] = useState(false)
   const [form, setForm] = useState({ fullName: '', email: '', password: '', confirmPassword: '' })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -28,14 +31,16 @@ export default function RegisterPage() {
 
     setIsLoading(true)
     try {
-      const { data: hasInvite, error: checkErr } = await supabase.rpc('has_pending_invite', {
-        p_email: form.email.trim(),
-      })
-      if (checkErr) throw checkErr
-      if (!hasInvite) {
-        toast.error('Nema aktivne pozivnice za ovaj email. Kontaktirajte administratora tvrtke.')
-        setIsLoading(false)
-        return
+      if (mode === 'invite') {
+        const { data: hasInvite, error: checkErr } = await supabase.rpc('has_pending_invite', {
+          p_email: form.email.trim(),
+        })
+        if (checkErr) throw checkErr
+        if (!hasInvite) {
+          toast.error('Nema aktivne pozivnice za ovaj email. Prebaci na "Nova tvrtka" ili kontaktiraj administratora.')
+          setIsLoading(false)
+          return
+        }
       }
 
       const { error } = await supabase.auth.signUp({
@@ -44,7 +49,12 @@ export default function RegisterPage() {
         options: { data: { full_name: form.fullName } },
       })
       if (error) throw error
-      toast.success('Račun kreiran! Provjeri email za potvrdu.')
+
+      if (mode === 'invite') {
+        toast.success('Račun kreiran! Provjeri email za potvrdu, zatim se prijavi.')
+      } else {
+        toast.success('Račun kreiran! Provjeri email za potvrdu, zatim nastavi s postavljanjem tvrtke.')
+      }
       navigate('/login')
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Greška pri registraciji'
@@ -70,9 +80,41 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        <div className="bg-[var(--surf)] rounded-[12px] border border-[var(--border)]  p-6">
-          <h2 className="text-lg font-semibold text-[var(--text)] mb-1">Novi račun</h2>
-          <p className="text-sm text-[var(--muted)] mb-6">Registracija je moguća samo uz pozivnicu administratora.</p>
+        <div className="bg-[var(--surf)] rounded-[12px] border border-[var(--border)] p-6">
+          {/* Mode toggle */}
+          <div className="grid grid-cols-2 gap-1 p-1 mb-5 rounded-[10px] bg-[var(--raised)] border border-[var(--border-s)]">
+            <button
+              type="button"
+              onClick={() => setMode('invite')}
+              className={`flex items-center justify-center gap-2 py-2 px-3 text-xs font-medium rounded-[7px] transition-colors ${
+                mode === 'invite'
+                  ? 'bg-[var(--surf)] text-[var(--text)] shadow-sm'
+                  : 'text-[var(--muted)] hover:text-[var(--text)]'
+              }`}
+            >
+              <Ticket size={14} /> Imam pozivnicu
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('company')}
+              className={`flex items-center justify-center gap-2 py-2 px-3 text-xs font-medium rounded-[7px] transition-colors ${
+                mode === 'company'
+                  ? 'bg-[var(--surf)] text-[var(--text)] shadow-sm'
+                  : 'text-[var(--muted)] hover:text-[var(--text)]'
+              }`}
+            >
+              <Building2 size={14} /> Nova tvrtka
+            </button>
+          </div>
+
+          <h2 className="text-lg font-semibold text-[var(--text)] mb-1">
+            {mode === 'invite' ? 'Pridruži se tvrtki' : 'Registriraj novu tvrtku'}
+          </h2>
+          <p className="text-sm text-[var(--muted)] mb-6">
+            {mode === 'invite'
+              ? 'Koristi isti email kao u pozivnici — automatski te dodajemo u tvrtku.'
+              : 'Kreiraj vlasnički račun, zatim ispuni podatke tvrtke u sljedećem koraku.'}
+          </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input label="Ime i prezime" type="text" value={form.fullName}
@@ -89,7 +131,7 @@ export default function RegisterPage() {
               leftAddon={<Lock size={16} />} required error={errors.confirmPassword} />
 
             <Button type="submit" className="w-full mt-2" isLoading={isLoading} size="lg">
-              Registriraj se
+              {mode === 'invite' ? 'Registriraj se' : 'Kreiraj račun i nastavi'}
             </Button>
           </form>
 
